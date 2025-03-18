@@ -1,12 +1,15 @@
-// sign-in.component.ts
+// login.component.ts
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from "@angular/forms";
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthService } from './auth.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +21,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule
   ],
   template: `
     <div class="auth-content">
@@ -29,6 +33,8 @@ import { MatIconModule } from '@angular/material/icon';
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Enter Your Email</mat-label>
           <input matInput formControlName="email" type="email">
+          <mat-error *ngIf="signInForm.controls.email.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="signInForm.controls.email.hasError('email')">Please enter a valid email</mat-error>
         </mat-form-field>
         
         <mat-form-field appearance="outline" class="form-field">
@@ -37,13 +43,17 @@ import { MatIconModule } from '@angular/material/icon';
           <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
             <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
+          <mat-error *ngIf="signInForm.controls.password.hasError('required')">Password is required</mat-error>
         </mat-form-field>
         
         <div class="forgot-password">
           <a routerLink="/auth/forgot-password" class="forgot-link">Forgot Password</a>
         </div>
         
-        <button mat-flat-button class="sign-in-button" type="submit">Sign in</button>
+        <button mat-flat-button class="sign-in-button" type="submit" [disabled]="isLoading || signInForm.invalid">
+          <span *ngIf="isLoading">Signing in...</span>
+          <span *ngIf="!isLoading">Sign in</span>
+        </button>
       </form>
     </div>
   `,
@@ -93,16 +103,41 @@ import { MatIconModule } from '@angular/material/icon';
   `]
 })
 export class LoginComponent {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+  
   signInForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required])
   });
   
   hidePassword = true;
+  isLoading = false;
   
   onSubmit() {
     if (this.signInForm.valid) {
-      // Handle sign in logic
+      this.isLoading = true;
+      
+      this.authService.login({
+        email: this.signInForm.value.email || '',
+        password: this.signInForm.value.password || ''
+      }).pipe(
+        finalize(() => this.isLoading = false)
+      ).subscribe({
+        next: (response) => {
+          this.snackBar.open('Login successful', 'Close', { duration: 3000 });
+          // Redirect to dashboard or home page
+          this.router.navigate(['/dashboard']);
+        },
+        error: (error) => {
+          let errorMessage = 'Login failed';
+          if (error.error?.message) {
+            errorMessage = error.error.message;
+          }
+          this.snackBar.open(errorMessage, 'Close', { duration: 5000 });
+        }
+      });
     }
   }
 }
