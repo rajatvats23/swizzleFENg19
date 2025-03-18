@@ -19,7 +19,7 @@ export const routes: Routes = [
         loadComponent: () => import('./features/auth/check-email.component').then(m => m.CheckEmailComponent)
       },
       {
-        path: 'reset-password',
+        path: 'reset-password/:token',
         loadComponent: () => import('./features/auth/reset-password.component').then(m => m.ResetPasswordComponent)
       },
       {

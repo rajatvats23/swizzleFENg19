@@ -32,14 +32,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
       <p>Type Your New Password here</p>
 
       <form [formGroup]="resetPasswordForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>New Password</mat-label>
-          <input
-            matInput
-            formControlName="password"
-            [type]="hidePassword ? 'password' : 'text'"
-          />
-        </mat-form-field>
+      <mat-form-field appearance="outline" class="form-field">
+  <mat-label>New Password</mat-label>
+  <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
+  <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+    <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+  </button>
+  <mat-error *ngIf="resetPasswordForm.controls.password.hasError('required')">Password is required</mat-error>
+  <mat-error *ngIf="resetPasswordForm.controls.password.hasError('minlength')">Password must be at least 8 characters</mat-error>
+</mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Confirm Password</mat-label>
@@ -58,6 +59,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
               hideConfirmPassword ? 'visibility_off' : 'visibility'
             }}</mat-icon>
           </button>
+          <mat-error *ngIf="passwordMatchError()">Passwords do not match</mat-error>
         </mat-form-field>
 
         <button
@@ -164,4 +166,11 @@ export class ResetPasswordComponent {
       });
     }
   }
+
+  // Add this to your component class
+passwordMatchError() {
+  const password = this.resetPasswordForm.get('password')?.value;
+  const confirmPassword = this.resetPasswordForm.get('confirmPassword')?.value;
+  return password !== confirmPassword && this.resetPasswordForm.get('confirmPassword')?.touched;
+}
 }
