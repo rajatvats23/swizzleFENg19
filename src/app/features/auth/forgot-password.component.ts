@@ -1,10 +1,14 @@
 // forgot-password.component.ts
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from "@angular/forms";
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-forgot-password',
@@ -68,10 +72,27 @@ export class ForgotPasswordComponent {
   forgotPasswordForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email])
   });
-  
+  // Add to component
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+  isLoading = false;
+
   onSubmit() {
     if (this.forgotPasswordForm.valid) {
-      // Handle password reset logic
+      this.isLoading = true;
+      this.authService.forgotPassword(this.forgotPasswordForm.value.email || '').subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.router.navigate(['/auth/check-email'], {
+            state: { email: this.forgotPasswordForm.value.email }
+          });
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.snackBar.open(error.error?.message || 'An error occurred', 'Close', { duration: 5000 });
+        }
+      });
     }
   }
 }

@@ -40,6 +40,27 @@ export class AuthService {
       })
     );
   }
+
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post<any>(`${environment.API_URL}/auth/forgot-password`, { email });
+  }
+  
+  resetPassword(token: string, password: string): Observable<any> {
+    return this.http.post<any>(`${environment.API_URL}/auth/reset-password/${token}`, { password });
+  }
+
+  registerAdmin(token: string, userData: any): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(
+      `${environment.API_URL}/auth/register/${token}`, 
+      userData
+    ).pipe(
+      tap(response => {
+        if (response.status === 'success' && response.data?.token) {
+          localStorage.setItem(this.AUTH_TOKEN_KEY, response.data.token);
+        }
+      })
+    );
+  }
   
   logout(): void {
     localStorage.removeItem(this.AUTH_TOKEN_KEY);

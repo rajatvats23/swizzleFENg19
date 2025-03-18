@@ -23,6 +23,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/auth/reset-password.component').then(m => m.ResetPasswordComponent)
       },
       {
+        path: 'register/:token',
+        loadComponent: () => import('./features/auth/register.component').then(m => m.RegisterComponent)
+      },
+      {
         path: '',
         redirectTo: 'login',
         pathMatch: 'full'
