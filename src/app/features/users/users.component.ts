@@ -35,7 +35,7 @@ export interface User {
       <div class="header-actions">
         <h1>Users Management</h1>
         <button mat-raised-button color="primary" (click)="openInviteDialog()">
-          <mat-icon>person_add</mat-icon> Invite Admin
+          <mat-icon class="material-symbols-outlined">person_add</mat-icon> Invite Admin
         </button>
       </div>
 
@@ -66,7 +66,7 @@ export interface User {
               <th mat-header-cell *matHeaderCellDef>Actions</th>
               <td mat-cell *matCellDef="let user">
                 <button mat-icon-button color="warn" (click)="deleteUser(user)" *ngIf="user.role !== 'superadmin'">
-                  <mat-icon>delete</mat-icon>
+                  <mat-icon class="material-symbols-outlined">delete</mat-icon>
                 </button>
               </td>
             </ng-container>

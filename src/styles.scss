@@ -13,6 +13,13 @@ html, body {
   font-family: 'Josephin', sans-serif !important;
 }
 
+:root {
+  --primary-color: #009c4c;
+  --text-dark: #232325;
+  --text-light: #ffffff;
+  --bg-light: #f1f1f1;
+}
+
 /* Set Josephin as the default font for everything */
 body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea {
   font-family: 'Josephin', sans-serif !important;
