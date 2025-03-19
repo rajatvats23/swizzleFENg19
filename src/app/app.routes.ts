@@ -27,6 +27,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/auth/register.component').then(m => m.RegisterComponent)
       },
       {
+        path: 'mfa-verify',
+        loadComponent: () => import('./features/auth/mfa-verify.component').then(m => m.MfaVerifyComponent)
+      },
+      {
         path: '',
         redirectTo: 'login',
         pathMatch: 'full'

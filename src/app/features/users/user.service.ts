@@ -37,4 +37,12 @@ export class UsersService {
   inviteAdmin(email: string): Observable<ApiResponse<null>> {
     return this.http.post<ApiResponse<null>>(`${environment.API_URL}/auth/invite`, { email });
   }
+  
+  // New method for MFA toggle
+  toggleMfa(id: string, enabled: boolean): Observable<ApiResponse<null>> {
+    return this.http.put<ApiResponse<null>>(
+      `${environment.API_URL}/mfa/toggle/${id}`, 
+      { enabled }
+    );
+  }
 }

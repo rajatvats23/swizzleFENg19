@@ -41,7 +41,7 @@ import { finalize } from 'rxjs';
           <mat-label>Password</mat-label>
           <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
           <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
-            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            <mat-icon class="material-symbols-outlined">{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
           <mat-error *ngIf="signInForm.controls.password.hasError('required')">Password is required</mat-error>
         </mat-form-field>
@@ -126,9 +126,15 @@ export class LoginComponent {
         finalize(() => this.isLoading = false)
       ).subscribe({
         next: (response) => {
-          this.snackBar.open('Login successful', 'Close', { duration: 3000 });
-          // Redirect to dashboard or home page
-          this.router.navigate(['/dashboard']);
+          if (response.data.requireMfa) {
+            // MFA required, redirect to MFA verification
+            this.router.navigate(['/auth/mfa-verify'], { 
+              state: { setupMode: response.data.mfaSetupRequired }
+            });
+          } else {
+            // No MFA required, proceed to dashboard
+            this.router.navigate(['/dashboard']);
+          }
         },
         error: (error) => {
           let errorMessage = 'Login failed';

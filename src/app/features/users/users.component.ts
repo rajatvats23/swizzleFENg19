@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { UsersService } from './user.service';
 import { InviteDialogComponent } from './invite-dialog/invite-dialog.component';
 
@@ -17,6 +19,7 @@ export interface User {
   role: string;
   countryCode: string;
   phoneNumber: string;
+  mfaEnabled?: boolean;
 }
 
 @Component({
@@ -28,7 +31,8 @@ export interface User {
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSlideToggleModule
   ],
   template: `
     <div class="users-container">
@@ -60,6 +64,17 @@ export interface User {
             <ng-container matColumnDef="role">
               <th mat-header-cell *matHeaderCellDef>Role</th>
               <td mat-cell *matCellDef="let user">{{user.role}}</td>
+            </ng-container>
+            
+            <ng-container matColumnDef="mfa">
+              <th mat-header-cell *matHeaderCellDef>MFA</th>
+              <td mat-cell *matCellDef="let user; let i = index">
+                <mat-slide-toggle
+                  [checked]="user.mfaEnabled"
+                  (change)="toggleMfa(user, $event.checked)"
+                  [disabled]="user.role === 'superadmin'"
+                ></mat-slide-toggle>
+              </td>
             </ng-container>
 
             <ng-container matColumnDef="actions">
@@ -98,9 +113,10 @@ export interface User {
 export class UsersComponent implements OnInit {
   private usersService = inject(UsersService);
   private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
 
   users: User[] = [];
-  displayedColumns: string[] = ['name', 'email', 'phone', 'role', 'actions'];
+  displayedColumns: string[] = ['name', 'email', 'phone', 'role', 'mfa', 'actions'];
 
   ngOnInit(): void {
     this.loadUsers();
@@ -125,6 +141,24 @@ export class UsersComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadUsers();
+      }
+    });
+  }
+
+  toggleMfa(user: User, enabled: boolean): void {
+    this.usersService.toggleMfa(user._id, enabled).subscribe({
+      next: () => {
+        user.mfaEnabled = enabled;
+        this.snackBar.open(
+          `MFA ${enabled ? 'enabled' : 'disabled'} for ${user.firstName} ${user.lastName}`,
+          'Close',
+          { duration: 3000 }
+        );
+      },
+      error: (error:any) => {
+        this.snackBar.open(error.error?.message || 'Error toggling MFA', 'Close', { duration: 5000 });
+        // Reset toggle to original state
+        user.mfaEnabled = !enabled;
       }
     });
   }
