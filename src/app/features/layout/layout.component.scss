@@ -36,7 +36,7 @@ $border-light: 0.5px solid rgba(0, 0, 0, 0.1);
   }
 
   &-expanded {
-    width: 250px;
+    width: 215px;
   }
 
   &-collapsed {
@@ -81,15 +81,18 @@ $border-light: 0.5px solid rgba(0, 0, 0, 0.1);
   font-weight: 200;
 }
 
-// Navigation
-.active {
-  background-color: rgba(255, 255, 255, 0.2) !important;
+mat-nav-list .nav-item.active {
+  background-color: rgba(255, 255, 255, 0.919) !important;
   border-radius: 0 !important;
+  
+  mat-icon {
+    color: #232325 !important;
+  }
 }
 
 .nav-item {
   cursor: pointer;
-  
+
   &:hover {
     background-color: rgba(255, 255, 255, 0.919);
     border-radius: 0 !important;
@@ -101,7 +104,7 @@ $border-light: 0.5px solid rgba(0, 0, 0, 0.1);
 
 .padding-fix {
   padding: 8px !important;
-  
+
   mat-icon {
     margin: 0 auto;
   }
@@ -188,18 +191,18 @@ $border-light: 0.5px solid rgba(0, 0, 0, 0.1);
 // Toggle sidenav
 .toggle-sidenav {
   position: absolute;
-  top: 84px;
+  top: 52px;
   left: 64px;
-  padding: 4px;
+  padding: 2px;
   width: 30px;
-  height: 30px;
+  height: 20px;
   background-color: white;
-  border-radius: 50%;
-  box-shadow: $shadow-sm;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 909;
 
   &.expanded {
-    left: 242px;
+    left: 204px;
   }
 
   mat-icon {
