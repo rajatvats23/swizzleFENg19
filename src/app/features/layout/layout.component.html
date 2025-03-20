@@ -8,10 +8,20 @@
       [class.drawer-collapsed]="!isExpanded()"
       opened
     >
-      <div class="logo-container">
-        <span class="app-logo" *ngIf="isExpanded()">Swizzle</span>
-        <span class="app-logo-small" *ngIf="!isExpanded()">AD</span>
-      </div>
+    <div class="logo-container">
+      <img
+        src="assets/images/logo.svg"
+        alt="Logo"
+        height="52"
+        *ngIf="isExpanded()"
+      />
+      <img
+        src="assets/images/logo_white.png"
+        alt="Logo"
+        height="32"
+        *ngIf="!isExpanded()"
+      />
+    </div>
       <mat-nav-list class="nav-list">
         @for (item of navItems(); track item.route) {
           <a
