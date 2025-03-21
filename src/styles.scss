@@ -1,3 +1,4 @@
+@use '@angular/material' as mat;
 * {
   margin: 0;
   padding: 0;
@@ -15,6 +16,7 @@ html, body {
 
 :root {
   --primary-color: #009c4c;
+  --secondary-color: #FFF8EB;
   --text-dark: #232325;
   --text-light: #ffffff;
   --bg-light: #f1f1f1;
@@ -30,7 +32,6 @@ html {
   --mat-sys-brand-font-family: 'Josephin', sans-serif !important;
   --mat-sys-plain-font-family: 'Josephin', sans-serif !important;
 }
-
 
 /* Note: Color palettes are generated from primary: #009C4C */
 html {
@@ -48,15 +49,15 @@ html {
   --mat-sys-on-primary-fixed: light-dark(#00210b, #00210b);
   --mat-sys-on-primary-fixed-variant: light-dark(#005225, #005225);
 
-  /* Secondary palette variables */
-  --mat-sys-secondary: light-dark(#3c6845, #a2d2a8);
-  --mat-sys-on-secondary: light-dark(#ffffff, #0a381a);
-  --mat-sys-secondary-container: light-dark(#bdefc2, #244f2f);
-  --mat-sys-on-secondary-container: light-dark(#00210b, #bdefc2);
-  --mat-sys-secondary-fixed: light-dark(#bdefc2, #bdefc2);
-  --mat-sys-secondary-fixed-dim: light-dark(#a2d2a8, #a2d2a8);
-  --mat-sys-on-secondary-fixed: light-dark(#00210b, #00210b);
-  --mat-sys-on-secondary-fixed-variant: light-dark(#244f2f, #244f2f);
+  /* Secondary palette variables - Updated to use the new secondary color */
+  --mat-sys-secondary: light-dark(#FFF8EB, #FFF8EB);
+  --mat-sys-on-secondary: light-dark(#232325, #232325);
+  --mat-sys-secondary-container: light-dark(#FFF8EB, #FFF8EB);
+  --mat-sys-on-secondary-container: light-dark(#232325, #232325);
+  --mat-sys-secondary-fixed: light-dark(#FFF8EB, #FFF8EB);
+  --mat-sys-secondary-fixed-dim: light-dark(#FFF1D8, #FFF1D8);
+  --mat-sys-on-secondary-fixed: light-dark(#232325, #232325);
+  --mat-sys-on-secondary-fixed-variant: light-dark(#4B4942, #4B4942);
 
   /* Tertiary palette variables */
   --mat-sys-tertiary: light-dark(#2d55c8, #b6c4ff);
@@ -68,7 +69,7 @@ html {
   --mat-sys-on-tertiary-fixed: light-dark(#00164e, #00164e);
   --mat-sys-on-tertiary-fixed-variant: light-dark(#003baf, #003baf);
 
-  /* Neutral palette variables */
+  /* Surface palette variables - Updated to include secondary color for specific components */
   --mat-sys-background: light-dark(#f4fbf1, #0e150f);
   --mat-sys-on-background: light-dark(#171d17, #dde5da);
   --mat-sys-surface: light-dark(#f4fbf1, #0e150f);
@@ -102,8 +103,8 @@ html {
   /* TYPOGRAPHY SYSTEM VARIABLES */
 
   /* Typography variables. Only used in the different typescale system variables. */
-  --mat-sys-brand-font-family: Roboto; /* The font-family to use for brand text. */
-  --mat-sys-plain-font-family: Roboto; /* The font-family to use for plain text. */
+  --mat-sys-brand-font-family: Josephin, sans-serif; /* The font-family to use for brand text. */
+  --mat-sys-plain-font-family: Josephin, sans-serif; /* The font-family to use for plain text. */
   --mat-sys-bold-font-weight: 700; /* The font-weight to use for bold text. */
   --mat-sys-medium-font-weight: 500; /* The font-weight to use for medium text. */
   --mat-sys-regular-font-weight: 400; /* The font-weight to use for regular text. */
@@ -266,4 +267,111 @@ html {
   --mat-sys-focus-state-layer-opacity: 0.12;
   --mat-sys-hover-state-layer-opacity: 0.08;
   --mat-sys-pressed-state-layer-opacity: 0.12;
+}
+
+/* Apply secondary color to specific Angular Material components */
+
+/* Dialog component using secondary color */
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-color: var(--secondary-color) !important;
+}
+
+/* Mat-table using secondary color */
+.mat-mdc-table {
+  background-color: var(--secondary-color) !important;
+}
+
+/* Mat-card using secondary color as an option */
+.secondary-card {
+  background-color: var(--secondary-color) !important;
+}
+
+/* Apply secondary color to table header */
+.mat-mdc-header-row {
+  background-color: var(--primary-color) !important;
+}
+
+.mat-mdc-header-cell {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+/* Add striping to table rows for better readability */
+.mat-mdc-row:nth-child(even) {
+  background-color: rgba(0, 156, 76, 0.05);
+}
+
+/* Apply secondary background to form fields */
+.secondary-field {
+  .mat-mdc-text-field-wrapper {
+    background-color: var(--secondary-color) !important;
+  }
+}
+
+/* Style buttons with secondary color */
+.mat-button-secondary {
+  background-color: var(--secondary-color) !important;
+  color: var(--text-dark) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* Update snackbar styles */
+.mat-mdc-snack-bar-container {
+  &.success-snackbar {
+    --mdc-snackbar-container-color: var(--primary-color);
+    --mdc-snackbar-supporting-text-color: white;
+  }
+  
+  &.error-snackbar {
+    --mdc-snackbar-container-color: var(--mat-sys-error);
+    --mdc-snackbar-supporting-text-color: white;
+  }
+}
+
+/* Secondary background utility class */
+.bg-secondary {
+  background-color: var(--secondary-color) !important;
+}
+
+/* Custom card styles */
+.dashboard-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--mat-sys-level3);
+  }
+  
+  .mat-mdc-card-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 16px;
+  }
+  
+  &.secondary {
+    background-color: var(--secondary-color);
+    
+    .mat-mdc-card-header {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      background-color: var(--secondary-color);
+      color: var(--text-dark);
+    }
+  }
+}
+
+
+
+
+$compact-form-field: mat.define-theme(
+  (
+    density: (
+      scale: -3
+    )
+  )
+);
+
+:root{
+  @include mat.form-field-density($compact-form-field)
 }
