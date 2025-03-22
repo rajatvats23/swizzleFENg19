@@ -10,7 +10,18 @@ export interface NavItem {
     appTitle: 'Admin Dashboard',
     items: [
       { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-      { label: 'Users', icon: 'people', route: '/dashboard/users' }
-      // Add more navigation items as needed
+      { label: 'Users', icon: 'people', route: '/dashboard/users' },
+      { 
+        label: 'Restaurants', 
+        icon: 'restaurant', 
+        route: '/dashboard/restaurants',
+        roles: ['admin', 'superadmin'] // Only show for admin and superadmin
+      },
+      { 
+        label: 'My Restaurant', 
+        icon: 'store', 
+        route: '/dashboard/my-restaurant',
+        roles: ['manager'] // Only show for manager
+      }
     ]
   };

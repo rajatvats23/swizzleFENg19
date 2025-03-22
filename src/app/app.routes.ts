@@ -53,6 +53,31 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'dashboard/restaurants',
+    loadComponent: () => import('./features/restaurants/restaurant-list.component').then(m => m.RestaurantListComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'dashboard/restaurants/new',
+    loadComponent: () => import('./features/restaurants/restaurant-form.component').then(m => m.RestaurantFormComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'dashboard/restaurants/:id',
+    loadComponent: () => import('./features/restaurants/restaurant-details.component').then(m => m.RestaurantDetailComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'dashboard/restaurants/:id/edit',
+    loadComponent: () => import('./features/restaurants/restaurant-form.component').then(m => m.RestaurantFormComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'dashboard/my-restaurant',
+    loadComponent: () => import('./features/restaurants/manager-restaurant.component').then(m => m.ManagerRestaurantComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'
