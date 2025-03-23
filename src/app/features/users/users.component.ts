@@ -10,6 +10,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UsersService } from './user.service';
 import { InviteDialogComponent } from './invite-dialog/invite-dialog.component';
+import { AuthService } from '../auth/auth.service';
 
 export interface User {
   _id: string;
@@ -39,9 +40,9 @@ export interface User {
       <div class="header-actions">
         <span class="header-title">Users Management</span>
         <button mat-raised-button color="primary" (click)="openInviteDialog()">
-          <mat-icon class="material-symbols-outlined">person_add</mat-icon>
-          Invite Admin
-        </button>
+  <mat-icon class="material-symbols-outlined">person_add</mat-icon>
+  {{ isManager() ? 'Invite Staff' : 'Invite Admin' }}
+</button>
       </div>
 
       <mat-card>
@@ -130,6 +131,7 @@ export class UsersComponent implements OnInit {
   private usersService = inject(UsersService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private authService = inject(AuthService);
 
   users: User[] = [];
   displayedColumns: string[] = [
@@ -144,7 +146,6 @@ export class UsersComponent implements OnInit {
   ngOnInit(): void {
     this.loadUsers();
   }
-
   loadUsers(): void {
     this.usersService.getUsers().subscribe({
       next: (response) => {
@@ -207,5 +208,9 @@ export class UsersComponent implements OnInit {
         },
       });
     }
+  }
+
+  isManager(): boolean {
+    return this.authService.isManager();
   }
 }
