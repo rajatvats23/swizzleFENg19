@@ -1,5 +1,7 @@
+// src/app/features/layout/layout.component.ts
+
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, inject, signal, ViewChild, OnInit } from '@angular/core';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -11,14 +13,8 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
-import { navigationConfig } from '../config/navigation.config';
-
-interface NavItem {
-  label: string;
-  icon: string;
-  route: string;
-}
+import { AuthService, User } from '../auth/auth.service';
+import { navigationConfig, NavItem } from '../config/navigation.config';
 
 @Component({
   selector: 'app-main-layout',
@@ -38,7 +34,7 @@ interface NavItem {
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   @ViewChild(MatDrawer) drawer!: MatDrawer;
   
   private router = inject(Router);
@@ -49,7 +45,8 @@ export class MainLayoutComponent {
   isHandset = signal(false);
   isExpanded = signal(true);
   
-  navItems = signal<NavItem[]>(navigationConfig.items);
+  navItems = signal<NavItem[]>([]);
+  currentUser = signal<User | null>(null);
 
   constructor() {
     inject(BreakpointObserver)
@@ -60,6 +57,34 @@ export class MainLayoutComponent {
           this.drawer.toggle();
         }
       });
+  }
+  
+  ngOnInit(): void {
+    // Get current user
+    this.currentUser.set(this.authService.getCurrentUser());
+    
+    // Filter navigation items based on user role
+    this.filterNavItems();
+  }
+  
+  filterNavItems(): void {
+    const user = this.currentUser();
+    const filteredItems = navigationConfig.items.filter(item => {
+      // If no roles specified, show to everyone
+      if (!item.roles) {
+        return true;
+      }
+      
+      // If user has no role, don't show restricted items
+      if (!user || !user.role) {
+        return false;
+      }
+      
+      // Show only if user's role is in the allowed roles
+      return item.roles.includes(user.role);
+    });
+    
+    this.navItems.set(filteredItems);
   }
 
   async toggleSidenavView() {

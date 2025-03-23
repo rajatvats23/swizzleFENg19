@@ -1,5 +1,5 @@
-// app/features/users/invite-dialog.component.ts
-import { Component, inject } from '@angular/core';
+// src/app/features/users/invite-dialog/invite-dialog.component.ts
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { UsersService } from '../user.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-invite-dialog',
@@ -20,7 +21,7 @@ import { UsersService } from '../user.service';
     MatButtonModule
   ],
   template: `
-    <h2 mat-dialog-title>Invite Admin</h2>
+    <h2 mat-dialog-title>{{ dialogTitle }}</h2>
     <form [formGroup]="inviteForm" (ngSubmit)="onSubmit()">
       <div mat-dialog-content>
         <mat-form-field appearance="outline" class="full-width">
@@ -33,7 +34,7 @@ import { UsersService } from '../user.service';
       <div mat-dialog-actions align="end">
         <button mat-button (click)="onCancel()">Cancel</button>
         <button mat-raised-button color="primary" type="submit" [disabled]="inviteForm.invalid || isLoading">
-          {{ isLoading ? 'Sending...' : 'Send Invitation' }}
+          {{ isLoading ? 'Sending...' : buttonText }}
         </button>
       </div>
     </form>
@@ -44,15 +45,32 @@ import { UsersService } from '../user.service';
     }
   `]
 })
-export class InviteDialogComponent {
+export class InviteDialogComponent implements OnInit {
   private dialogRef = inject(MatDialogRef<InviteDialogComponent>);
   private usersService = inject(UsersService);
+  private authService = inject(AuthService);
 
   inviteForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email])
   });
 
   isLoading = false;
+  dialogTitle = 'Invite User';
+  buttonText = 'Send Invitation';
+
+  ngOnInit(): void {
+    // Set appropriate text based on user role
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      if (currentUser.role === 'manager') {
+        this.dialogTitle = 'Invite Staff Member';
+        this.buttonText = 'Send Invitation';
+      } else {
+        this.dialogTitle = 'Invite Admin';
+        this.buttonText = 'Send Invitation';
+      }
+    }
+  }
 
   onSubmit(): void {
     if (this.inviteForm.valid) {
@@ -65,8 +83,7 @@ export class InviteDialogComponent {
         },
         error: (error) => {
           this.isLoading = false;
-          console.error('Error inviting admin:', error);
-          // You might want to show an error message here
+          console.error('Error inviting user:', error);
         }
       });
     }

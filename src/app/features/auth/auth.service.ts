@@ -8,6 +8,18 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+  countryCode: string;
+  phoneNumber: string;
+  restaurantId?: string;
+  token?: string;
+}
+
 export interface LoginResponse {
   status: string;
   message: string;
@@ -17,7 +29,7 @@ export interface LoginResponse {
     lastName: string;
     email: string;
     role: string;
-    token: string;
+    token?: string;
     requireMfa?: boolean;
     mfaSetupRequired?: boolean;
     tempToken?: string;
@@ -47,7 +59,8 @@ export interface MfaVerifyResponse {
 export class AuthService {
   private http = inject(HttpClient);
   private readonly AUTH_TOKEN_KEY = 'auth_token';
-  private readonly MFA_TEMP_USER_KEY = 'mfa_temp_user';
+  private readonly USER_INFO_KEY = 'user_info';
+  private readonly MFA_TEMP_USER_KEY = 'mfa_temp_user'
   
   login(credentials: LoginCredentials): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(
@@ -65,8 +78,13 @@ export class AuthService {
               localStorage.setItem(this.AUTH_TOKEN_KEY, response.data.tempToken);
             }
           } else if (response.data?.token) {
-            // No MFA required, set auth token directly
+            // No MFA required, store auth token and user info
             localStorage.setItem(this.AUTH_TOKEN_KEY, response.data.token);
+            
+            // Store user info (without token)
+            const userInfo = { ...response.data };
+            delete userInfo.token;
+            localStorage.setItem(this.USER_INFO_KEY, JSON.stringify(userInfo));
           }
         }
       })
@@ -87,16 +105,44 @@ export class AuthService {
       userData
     ).pipe(
       tap(response => {
-        if (response.status === 'success' && response.data?.token) {
-          localStorage.setItem(this.AUTH_TOKEN_KEY, response.data.token);
+        if (response.status === 'success') {
+          if (response.data?.token) {
+            // Store the auth token
+            localStorage.setItem(this.AUTH_TOKEN_KEY, response.data.token);
+            
+            // Store user info (without token)
+            const userInfo = { ...response.data };
+            delete userInfo.token;
+            localStorage.setItem(this.USER_INFO_KEY, JSON.stringify(userInfo));
+          }
         }
       })
     );
+  }
+
+  isManager(): boolean {
+    const user = this.getCurrentUser();
+    return user?.role === 'manager';
+  }
+  
+  isStaff(): boolean {
+    const user = this.getCurrentUser();
+    return user?.role === 'staff';
+  }
+  
+  isAdminOrSuperAdmin(): boolean {
+    const user = this.getCurrentUser();
+    return user?.role === 'admin' || user?.role === 'superadmin';
   }
   
   // New MFA methods
   getMfaSetup(): Observable<MfaSetupResponse> {
     return this.http.get<MfaSetupResponse>(`${environment.API_URL}/mfa/setup`);
+  }
+
+  getCurrentUser(): User | null {
+    const userJson = localStorage.getItem(this.USER_INFO_KEY);
+    return userJson ? JSON.parse(userJson) : null;
   }
   
   verifyMfaSetup(code: string): Observable<MfaVerifyResponse> {
@@ -108,12 +154,22 @@ export class AuthService {
         if (response.status === 'success' && response.data?.token) {
           // MFA setup successful, now set the auth token
           localStorage.setItem(this.AUTH_TOKEN_KEY, response.data.token);
+          
+          // Get the temp user info and store as permanent user info
+          const tempUser = this.getTempUserInfo();
+          if (tempUser) {
+            delete tempUser.tempToken;
+            delete tempUser.requireMfa;
+            delete tempUser.mfaSetupRequired;
+            localStorage.setItem(this.USER_INFO_KEY, JSON.stringify(tempUser));
+          }
+          
           localStorage.removeItem(this.MFA_TEMP_USER_KEY);
         }
       })
     );
   }
-  
+
   verifyMfaLogin(code: string): Observable<MfaVerifyResponse> {
     // Get the temporary user info
     const tempUser = this.getTempUserInfo();
@@ -126,6 +182,15 @@ export class AuthService {
         if (response.status === 'success' && response.data?.token) {
           // MFA verification successful, now set the auth token
           localStorage.setItem(this.AUTH_TOKEN_KEY, response.data.token);
+          
+          // Store user info from temp storage
+          if (tempUser) {
+            delete tempUser.tempToken;
+            delete tempUser.requireMfa;
+            delete tempUser.mfaSetupRequired;
+            localStorage.setItem(this.USER_INFO_KEY, JSON.stringify(tempUser));
+          }
+          
           localStorage.removeItem(this.MFA_TEMP_USER_KEY);
         }
       })
@@ -143,6 +208,7 @@ export class AuthService {
   
   logout(): void {
     localStorage.removeItem(this.AUTH_TOKEN_KEY);
+    localStorage.removeItem(this.USER_INFO_KEY);
     localStorage.removeItem(this.MFA_TEMP_USER_KEY);
   }
   

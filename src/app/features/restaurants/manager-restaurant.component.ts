@@ -306,7 +306,7 @@ import { Restaurant } from './models/restaurant.model';
     .form-row {
       margin-bottom: 20px;
     }
-    .two-col {
+    .two-col > * {
       display: flex;
       gap: 20px;
     }

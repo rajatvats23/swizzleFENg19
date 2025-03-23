@@ -74,8 +74,20 @@
         </button>
         <button class="header-actions" mat-icon-button [matMenuTriggerFor]="profileMenu">
           <mat-icon class="material-symbols-outlined">account_circle</mat-icon>
+          <span class="user-name" *ngIf="currentUser()">{{ currentUser()?.firstName }}</span>
         </button>
         <mat-menu #profileMenu="matMenu">
+          <div class="menu-header" *ngIf="currentUser()">
+            <div class="user-info">
+              <span class="user-name">{{ currentUser()?.firstName }} {{ currentUser()?.lastName }}</span>
+              <span class="user-role">{{ currentUser()?.role | titlecase }}</span>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <button mat-menu-item routerLink="/dashboard/profile">
+            <mat-icon class="material-symbols-outlined">person</mat-icon>
+            <span>My Profile</span>
+          </button>
           <button mat-menu-item (click)="logout()">
             <mat-icon class="material-symbols-outlined">exit_to_app</mat-icon>
             <span>Logout</span>

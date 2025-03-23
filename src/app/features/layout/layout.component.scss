@@ -27,13 +27,14 @@ $border-light: 0.5px solid rgba(0, 0, 0, 0.1);
   padding-top: 16px;
   padding-bottom: 0;
   width: auto;
+  font-weight: 100 !important;
   overflow-x: hidden;
   border: none;
   border-radius: 0;
 
   mat-icon {
     color: $text-light;
-    font-size: 22px;
+    font-size: 26px;
   }
 
   // &-expanded {
@@ -223,4 +224,25 @@ mat-nav-list .nav-item.active {
   display: flex;
   justify-content: center;
   width: 100%;
+}
+
+// Add to src/app/features/layout/layout.component.scss
+.user-name {
+  margin-left: 8px;
+  font-size: 14px;
+}
+
+.menu-header {
+  padding: 16px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-role {
+  color: #777;
+  font-size: 12px;
+  margin-top: 4px;
 }

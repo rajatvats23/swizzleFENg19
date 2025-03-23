@@ -4,24 +4,34 @@ export interface NavItem {
     label: string;
     icon: string;
     route: string;
+    roles?: string[]; 
   }
   
   export const navigationConfig = {
     appTitle: 'Admin Dashboard',
     items: [
-      { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-      { label: 'Users', icon: 'people', route: '/dashboard/users' },
+      { 
+        label: 'Dashboard', 
+        icon: 'dashboard', 
+        route: '/dashboard'
+      },
+      { 
+        label: 'Users', 
+        icon: 'people', 
+        route: '/dashboard/users',
+        roles: ['superadmin', 'admin', 'manager'] // Not visible to staff
+      },
       { 
         label: 'Restaurants', 
         icon: 'restaurant', 
         route: '/dashboard/restaurants',
-        roles: ['admin', 'superadmin'] // Only show for admin and superadmin
+        roles: ['admin', 'superadmin'] // Only superadmin and admin
       },
       { 
         label: 'My Restaurant', 
         icon: 'store', 
         route: '/dashboard/my-restaurant',
-        roles: ['manager'] // Only show for manager
+        roles: ['manager', 'staff'] // Only restaurant managers and staff
       }
     ]
   };
