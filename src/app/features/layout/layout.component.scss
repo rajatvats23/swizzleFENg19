@@ -26,6 +26,7 @@ $border-light: 0.5px solid rgba(0, 0, 0, 0.1);
   background-color: $primary-color;
   padding-top: 16px;
   padding-bottom: 0;
+  width: auto;
   overflow-x: hidden;
   border: none;
   border-radius: 0;
@@ -35,13 +36,13 @@ $border-light: 0.5px solid rgba(0, 0, 0, 0.1);
     font-size: 22px;
   }
 
-  &-expanded {
-    width: 215px;
-  }
+  // &-expanded {
+  //   width: 215px;
+  // }
 
-  &-collapsed {
-    width: 72px;
-  }
+  // &-collapsed {
+  //   width: 72px;
+  // }
 }
 
 ::ng-deep .mat-drawer-inner-container::-webkit-scrollbar {
@@ -106,7 +107,7 @@ mat-nav-list .nav-item.active {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
-  padding: 8px 0 !important;
+  padding: 8px !important;
   width: 100% !important;
 }
 
@@ -192,7 +193,7 @@ mat-nav-list .nav-item.active {
 .toggle-sidenav {
   position: absolute;
   top: 52px;
-  left: 64px;
+  left: 58px;
   padding: 2px;
   width: 30px;
   height: 20px;
@@ -202,7 +203,7 @@ mat-nav-list .nav-item.active {
   z-index: 909;
 
   &.expanded {
-    left: 204px;
+    left: 170px;
   }
 
   mat-icon {
