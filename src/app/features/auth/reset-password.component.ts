@@ -36,7 +36,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   <mat-label>New Password</mat-label>
   <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
   <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
-    <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+    <mat-icon class="material-symbols-outlined">{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
   </button>
   <mat-error *ngIf="resetPasswordForm.controls.password.hasError('required')">Password is required</mat-error>
   <mat-error *ngIf="resetPasswordForm.controls.password.hasError('minlength')">Password must be at least 8 characters</mat-error>
@@ -55,7 +55,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
             type="button"
             (click)="hideConfirmPassword = !hideConfirmPassword"
           >
-            <mat-icon>{{
+            <mat-icon class="material-symbols-outlined">{{
               hideConfirmPassword ? 'visibility_off' : 'visibility'
             }}</mat-icon>
           </button>

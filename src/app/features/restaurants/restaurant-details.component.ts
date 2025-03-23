@@ -32,13 +32,13 @@ import { AuthService } from '../auth/auth.service';
         <h1>{{restaurant.name}}</h1>
         <div class="action-buttons">
           <button mat-button color="primary" routerLink="/dashboard/restaurants">
-            <mat-icon>arrow_back</mat-icon> Back to List
+            <mat-icon class="material-symbols-outlined">arrow_back</mat-icon> Back to List
           </button>
           <button mat-raised-button color="accent" [routerLink]="['/dashboard/restaurants', restaurant._id, 'edit']">
-            <mat-icon>edit</mat-icon> Edit
+            <mat-icon class="material-symbols-outlined">edit</mat-icon> Edit
           </button>
           <button mat-raised-button color="warn" (click)="confirmDelete()" *ngIf="isAdminOrSuperAdmin()">
-            <mat-icon>delete</mat-icon> Delete
+            <mat-icon class="material-symbols-outlined">delete</mat-icon> Delete
           </button>
         </div>
       </div>

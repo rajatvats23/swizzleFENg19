@@ -84,13 +84,13 @@ import { RestaurantDialogService } from './restaurant-dialog.service';
               <th mat-header-cell *matHeaderCellDef>Actions</th>
               <td mat-cell *matCellDef="let restaurant">
                 <a mat-icon-button [routerLink]="['/dashboard/restaurants', restaurant._id]" color="primary" matTooltip="View Details">
-                  <mat-icon>visibility</mat-icon>
+                  <mat-icon class="material-symbols-outlined">visibility</mat-icon>
                 </a>
                 <button mat-icon-button color="accent" (click)="openEditDialog(restaurant)" matTooltip="Edit">
-                  <mat-icon>edit</mat-icon>
+                  <mat-icon class="material-symbols-outlined">edit</mat-icon>
                 </button>
                 <button mat-icon-button color="warn" (click)="confirmDelete(restaurant)" matTooltip="Delete">
-                  <mat-icon>delete</mat-icon>
+                  <mat-icon class="material-symbols-outlined">delete</mat-icon>
                 </button>
               </td>
             </ng-container>

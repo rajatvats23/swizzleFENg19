@@ -33,7 +33,7 @@ import { RestaurantService } from './restaurant.service';
       <div class="header-actions">
         <h1>{{ isEditMode ? 'Edit' : 'Create' }} Restaurant</h1>
         <button mat-button color="primary" routerLink="/dashboard/restaurants">
-          <mat-icon>arrow_back</mat-icon> Back to List
+          <mat-icon class="material-symbols-outlined">arrow_back</mat-icon> Back to List
         </button>
       </div>
 

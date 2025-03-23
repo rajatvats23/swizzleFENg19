@@ -55,7 +55,7 @@ import { AuthService } from './auth.service';
           <mat-label>Password</mat-label>
           <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'">
           <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
-            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            <mat-icon class="material-symbols-outlined">{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
           <mat-error *ngIf="registerForm.controls.password.hasError('required')">Password is required</mat-error>
           <mat-error *ngIf="registerForm.controls.password.hasError('minlength')">Password must be at least 8 characters</mat-error>
