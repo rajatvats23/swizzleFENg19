@@ -12,6 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { navigationConfig } from '../config/navigation.config';
 
 interface NavItem {
   label: string;
@@ -48,11 +49,7 @@ export class MainLayoutComponent {
   isHandset = signal(false);
   isExpanded = signal(true);
   
-  navItems = signal<NavItem[]>([
-    { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-    { label: 'Users', icon: 'people', route: '/dashboard/users' }
-    // Add more navigation items as needed
-  ]);
+  navItems = signal<NavItem[]>(navigationConfig.items);
 
   constructor() {
     inject(BreakpointObserver)

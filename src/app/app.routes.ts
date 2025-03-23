@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -49,33 +50,23 @@ export const routes: Routes = [
       {
         path: 'users',
         loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent)
+      },
+      {
+        path: 'restaurants',
+        loadComponent: () => import('./features/restaurants/restaurant-list.component').then(m => m.RestaurantListComponent),
+        canActivate: [() => roleGuard(['admin', 'superadmin'])]
+      },
+      {
+        path: 'restaurants/:id',
+        loadComponent: () => import('./features/restaurants/restaurant-details.component').then(m => m.RestaurantDetailComponent),
+        canActivate: [() => roleGuard(['admin', 'superadmin'])]
+      },
+      {
+        path: 'my-restaurant',
+        loadComponent: () => import('./features/restaurants/manager-restaurant.component').then(m => m.ManagerRestaurantComponent),
+        canActivate: [() => roleGuard(['manager'])]
       }
     ]
-  },
-  {
-    path: 'dashboard/restaurants',
-    loadComponent: () => import('./features/restaurants/restaurant-list.component').then(m => m.RestaurantListComponent),
-    canActivate: [authGuard]
-  },
-  {
-    path: 'dashboard/restaurants/new',
-    loadComponent: () => import('./features/restaurants/restaurant-form.component').then(m => m.RestaurantFormComponent),
-    canActivate: [authGuard]
-  },
-  {
-    path: 'dashboard/restaurants/:id',
-    loadComponent: () => import('./features/restaurants/restaurant-details.component').then(m => m.RestaurantDetailComponent),
-    canActivate: [authGuard]
-  },
-  {
-    path: 'dashboard/restaurants/:id/edit',
-    loadComponent: () => import('./features/restaurants/restaurant-form.component').then(m => m.RestaurantFormComponent),
-    canActivate: [authGuard]
-  },
-  {
-    path: 'dashboard/my-restaurant',
-    loadComponent: () => import('./features/restaurants/manager-restaurant.component').then(m => m.ManagerRestaurantComponent),
-    canActivate: [authGuard]
   },
   {
     path: '',

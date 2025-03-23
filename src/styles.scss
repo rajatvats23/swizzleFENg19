@@ -361,6 +361,24 @@ html {
   }
 }
 
+::ng-deep .mat-horizontal-stepper-content,
+::ng-deep .mat-vertical-stepper-content,
+::ng-deep .mat-step-header {
+  background-color: inherit !important;
+}
+
+::ng-deep .mat-step-header {
+  background-color: transparent !important;
+}
+
+.dialog-container {
+  background-color: #FFF8EB; /* This is your light brown/orange color */
+}
+
+.mat-mdc-dialog-surface {
+  background-color: #FFF8EB !important;
+}
+
 
 
 

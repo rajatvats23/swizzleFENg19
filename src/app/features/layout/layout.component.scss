@@ -103,11 +103,11 @@ mat-nav-list .nav-item.active {
 }
 
 .padding-fix {
-  padding: 8px !important;
-
-  mat-icon {
-    margin: 0 auto;
-  }
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 8px 0 !important;
+  width: 100% !important;
 }
 
 .logout-item {
@@ -215,4 +215,11 @@ mat-nav-list .nav-item.active {
   .main-content {
     padding: 16px 16px 80px;
   }
+}
+
+
+.icon-center {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }

@@ -10,8 +10,11 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RestaurantService } from './restaurant.service';
 import { Restaurant } from './models/restaurant.model';
+import { ConfirmDialogComponent } from '../../shared/generics/cofirm-dialog.component';
+import { RestaurantDialogService } from './restaurant-dialog.service';
 
 @Component({
   selector: 'app-restaurant-list',
@@ -25,14 +28,15 @@ import { Restaurant } from './models/restaurant.model';
     MatCardModule,
     MatChipsModule,
     MatDialogModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatTooltipModule
   ],
   template: `
     <div class="container">
       <div class="header-actions">
         <h1>Restaurant Management</h1>
-        <button mat-raised-button color="primary" routerLink="/dashboard/restaurants/new">
-          <mat-icon>add</mat-icon> Add Restaurant
+        <button mat-raised-button color="primary" (click)="openCreateDialog()">
+          <mat-icon class="material-symbols-outlined">add</mat-icon> Add Restaurant
         </button>
       </div>
 
@@ -82,9 +86,9 @@ import { Restaurant } from './models/restaurant.model';
                 <a mat-icon-button [routerLink]="['/dashboard/restaurants', restaurant._id]" color="primary" matTooltip="View Details">
                   <mat-icon>visibility</mat-icon>
                 </a>
-                <a mat-icon-button [routerLink]="['/dashboard/restaurants', restaurant._id, 'edit']" color="accent" matTooltip="Edit">
+                <button mat-icon-button color="accent" (click)="openEditDialog(restaurant)" matTooltip="Edit">
                   <mat-icon>edit</mat-icon>
-                </a>
+                </button>
                 <button mat-icon-button color="warn" (click)="confirmDelete(restaurant)" matTooltip="Delete">
                   <mat-icon>delete</mat-icon>
                 </button>
@@ -131,6 +135,7 @@ import { Restaurant } from './models/restaurant.model';
 })
 export class RestaurantListComponent implements OnInit {
   private restaurantService = inject(RestaurantService);
+  private dialogService = inject(RestaurantDialogService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
@@ -157,24 +162,37 @@ export class RestaurantListComponent implements OnInit {
     });
   }
 
-  getStatusColor(status: string): string {
-    switch (status) {
-      case 'active': return 'primary';
-      case 'inactive': return 'warn';
-      default: return 'accent';
-    }
+  openCreateDialog(): void {
+    this.dialogService.openCreateDialog().subscribe((result) => {
+      if (result) {
+        this.loadRestaurants();
+      }
+    });
   }
 
-  getProgressColor(percentage: number): string {
-    if (percentage < 30) return 'warn';
-    if (percentage < 70) return 'accent';
-    return 'primary';
+  openEditDialog(restaurant: Restaurant): void {
+    this.dialogService.openEditDialog(restaurant).subscribe((result) => {
+      if (result) {
+        this.loadRestaurants();
+      }
+    });
   }
 
   confirmDelete(restaurant: Restaurant): void {
-    if (confirm(`Are you sure you want to delete "${restaurant.name}"?`)) {
-      this.deleteRestaurant(restaurant._id);
-    }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Delete Restaurant',
+        message: `Are you sure you want to delete "${restaurant.name}"?`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.deleteRestaurant(restaurant._id);
+      }
+    });
   }
 
   deleteRestaurant(id: string): void {
@@ -187,5 +205,19 @@ export class RestaurantListComponent implements OnInit {
         this.snackBar.open(error.error?.message || 'Error deleting restaurant', 'Close', { duration: 5000 });
       }
     });
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'active': return 'primary';
+      case 'inactive': return 'warn';
+      default: return 'accent';
+    }
+  }
+
+  getProgressColor(percentage: number): string {
+    if (percentage < 30) return 'warn';
+    if (percentage < 70) return 'accent';
+    return 'primary';
   }
 }
