@@ -34,7 +34,7 @@ import { RestaurantDialogService } from './restaurant-dialog.service';
   template: `
     <div class="container">
       <div class="header-actions">
-        <h1>Restaurant Management</h1>
+        <span class="header-title">Restaurant Management</span >
         <button mat-raised-button color="primary" (click)="openCreateDialog()">
           <mat-icon class="material-symbols-outlined">add</mat-icon> Add Restaurant
         </button>
