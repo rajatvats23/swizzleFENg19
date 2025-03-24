@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { MenuListComponent } from './features/menus/menu-list.component';
+import { MenuFormComponent } from './features/menus/menu-form.component';
+import { MenuDetailComponent } from './features/menus/menu-details.component';
 
 export const routes: Routes = [
   {
@@ -65,6 +68,24 @@ export const routes: Routes = [
         path: 'my-restaurant',
         loadComponent: () => import('./features/restaurants/manager-restaurant.component').then(m => m.ManagerRestaurantComponent),
         canActivate: [() => roleGuard(['manager'])]
+      },
+      {
+        path: 'menus',
+        loadComponent: () => Promise.resolve(MenuListComponent)
+      },
+      {
+        path: 'menus/create',
+        loadComponent: () => Promise.resolve(MenuFormComponent),
+        canActivate: [() => roleGuard(['manager'])]
+      },
+      {
+        path: 'menus/edit/:id',
+        loadComponent: () => Promise.resolve(MenuFormComponent),
+        canActivate: [() => roleGuard(['manager'])]
+      },
+      {
+        path: 'menus/:id',
+        loadComponent: () => Promise.resolve(MenuDetailComponent)
       }
     ]
   },
