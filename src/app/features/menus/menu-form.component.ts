@@ -27,7 +27,7 @@ import { MenuService } from './menu.service';
   template: `
     <div class="container">
       <div class="header-actions">
-        <h1>{{ isEditMode ? 'Edit' : 'Create' }} Menu</h1>
+        <span class="top-label">{{ isEditMode ? 'Edit' : 'Create' }} Menu</span>
         <button mat-button color="primary" routerLink="/dashboard/menus">
           <mat-icon class="material-symbols-outlined">arrow_back</mat-icon> Back to List
         </button>

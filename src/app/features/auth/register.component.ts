@@ -23,7 +23,7 @@ import { AuthService } from './auth.service';
   ],
   template: `
     <div class="auth-content">
-      <h1>Complete Registration</h1>
+      <span class="top-label">Complete Registration</span>
       <h2>Enter your details to get started</h2>
       
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">

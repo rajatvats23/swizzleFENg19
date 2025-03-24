@@ -26,7 +26,7 @@ import { finalize } from 'rxjs';
   ],
   template: `
     <div class="auth-content">
-      <h1>Welcome!</h1>
+      <span class="top-label">Welcome!</span>
       <h2>Sign in to Get Started</h2>
       
       <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">

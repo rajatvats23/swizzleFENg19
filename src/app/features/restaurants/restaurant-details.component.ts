@@ -29,7 +29,7 @@ import { AuthService } from '../auth/auth.service';
   template: `
     <div class="container" *ngIf="restaurant">
       <div class="header-actions">
-        <h1>{{restaurant.name}}</h1>
+        <span class="top-label">{{restaurant.name}}</span>
         <div class="action-buttons">
           <button mat-button color="primary" routerLink="/dashboard/restaurants">
             <mat-icon class="material-symbols-outlined">arrow_back</mat-icon> Back to List

@@ -12,7 +12,7 @@ import { AuthService } from '../auth/auth.service';
   template: `
     <div class="dashboard-container">
       <header>
-        <h1>Dashboard</h1>
+        <span class="top-label">Dashboard</span>
       </header>
       
       <main>

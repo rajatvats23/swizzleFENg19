@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [CommonModule, RouterLink, MatButtonModule],
   template: `
     <div class="auth-content">
-      <h1>Check your Email</h1>
+      <span class="top-label">Check your Email</span>
       <p>We have sent a Password link to {{ email }}</p>
       
       <button mat-flat-button class="back-button" routerLink="/auth/sign-in">Back to Login</button>

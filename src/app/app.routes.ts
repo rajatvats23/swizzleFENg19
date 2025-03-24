@@ -4,6 +4,9 @@ import { roleGuard } from './core/guards/role.guard';
 import { MenuListComponent } from './features/menus/menu-list.component';
 import { MenuFormComponent } from './features/menus/menu-form.component';
 import { MenuDetailComponent } from './features/menus/menu-details.component';
+import { CategoryListComponent } from './features/category/category-list.component';
+import { CategoryFormComponent } from './features/category/category-form.component';
+import { CategoryDetailComponent } from './features/category/category-details.component';
 
 export const routes: Routes = [
   {
@@ -86,6 +89,24 @@ export const routes: Routes = [
       {
         path: 'menus/:id',
         loadComponent: () => Promise.resolve(MenuDetailComponent)
+      },
+      {
+        path: 'categories',
+        loadComponent: () => Promise.resolve(CategoryListComponent)
+      },
+      {
+        path: 'categories/create',
+        loadComponent: () => Promise.resolve(CategoryFormComponent),
+        canActivate: [() => roleGuard(['manager'])]
+      },
+      {
+        path: 'categories/edit/:id',
+        loadComponent: () => Promise.resolve(CategoryFormComponent),
+        canActivate: [() => roleGuard(['manager', 'staff'])]
+      },
+      {
+        path: 'categories/:id',
+        loadComponent: () => Promise.resolve(CategoryDetailComponent)
       }
     ]
   },

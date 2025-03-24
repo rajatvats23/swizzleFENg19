@@ -39,6 +39,12 @@ export const navigationConfig = {
       icon: 'menu_book', 
       route: '/dashboard/menus',
       roles: ['superadmin', 'admin', 'manager'] // All except staff
+    },
+    { 
+      label: 'Categories', 
+      icon: 'category', 
+      route: '/dashboard/categories',
+      roles: ['superadmin', 'admin', 'manager', 'staff'] // All roles can view categories
     }
   ]
 };

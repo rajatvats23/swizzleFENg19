@@ -31,7 +31,7 @@ import { RestaurantService } from './restaurant.service';
   template: `
     <div class="container">
       <div class="header-actions">
-        <h1>{{ isEditMode ? 'Edit' : 'Create' }} Restaurant</h1>
+        <span class="top-label">{{ isEditMode ? 'Edit' : 'Create' }} Restaurant</span>
         <button mat-button color="primary" routerLink="/dashboard/restaurants">
           <mat-icon class="material-symbols-outlined">arrow_back</mat-icon> Back to List
         </button>

@@ -38,7 +38,7 @@ import { Restaurant } from './models/restaurant.model';
   template: `
     <div class="container" *ngIf="restaurant">
       <div class="header-section">
-        <h1>My Restaurant</h1>
+        <span class="top-label">My Restaurant</span>
         <div class="status-container">
           <mat-progress-bar [value]="restaurant.completionPercentage" [color]="getProgressColor(restaurant.completionPercentage)"></mat-progress-bar>
           <div class="status-info">

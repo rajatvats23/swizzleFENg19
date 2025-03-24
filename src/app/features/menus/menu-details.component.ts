@@ -24,7 +24,7 @@ import { AuthService } from '../auth/auth.service';
   template: `
     <div class="container" *ngIf="menu">
       <div class="header-actions">
-        <h1>{{menu.name}}</h1>
+        <span class="top-label">{{menu.name}}</span>
         <div class="action-buttons">
           <button mat-button color="primary" routerLink="/dashboard/menus">
             <mat-icon class="material-symbols-outlined">arrow_back</mat-icon> Back to List

@@ -23,7 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
   ],
   template: `
     <div class="auth-content">
-      <h1>Two-Factor Authentication</h1>
+      <span class="top-label">Two-Factor Authentication</span>
       <p *ngIf="!setupMode">Enter the 6-digit code from your authenticator app</p>
       
       <!-- First-time setup mode with QR code -->

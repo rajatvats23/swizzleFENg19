@@ -28,7 +28,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   ],
   template: `
     <div class="auth-content">
-      <h1>Set New Password</h1>
+      <span class="top-label">Set New Password</span>
       <p>Type Your New Password here</p>
 
       <form [formGroup]="resetPasswordForm" (ngSubmit)="onSubmit()">
