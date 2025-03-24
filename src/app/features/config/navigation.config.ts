@@ -45,6 +45,24 @@ export const navigationConfig = {
       icon: 'category', 
       route: '/dashboard/categories',
       roles: ['superadmin', 'admin', 'manager', 'staff'] // All roles can view categories
+    },
+    { 
+      label: 'Tags', 
+      icon: 'local_offer', 
+      route: '/dashboard/tags',
+      roles: ['superadmin', 'admin', 'manager', 'staff'] // All roles can view tags
+    },
+    { 
+      label: 'Products', 
+      icon: 'fastfood', 
+      route: '/dashboard/products',
+      roles: ['superadmin', 'admin', 'manager', 'staff'] // All roles can view products
+    },
+    { 
+      label: 'Addons', 
+      icon: 'add_circle', 
+      route: '/dashboard/addons',
+      roles: ['manager'] // Only visible to restaurant managers
     }
   ]
 };

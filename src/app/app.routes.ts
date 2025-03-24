@@ -7,6 +7,13 @@ import { MenuDetailComponent } from './features/menus/menu-details.component';
 import { CategoryListComponent } from './features/category/category-list.component';
 import { CategoryFormComponent } from './features/category/category-form.component';
 import { CategoryDetailComponent } from './features/category/category-details.component';
+import { ProductFormComponent } from './features/products/product-form.component';
+import { ProductListComponent } from './features/products/product-list.component';
+import { TagListComponent } from './features/tag/tag.component';
+import { ProductDetailComponent } from './features/products/product-details.component';
+import { AddonDetailComponent } from './features/addons/addon-details.component';
+import { AddonFormComponent } from './features/addons/addon-form.component';
+import { AddonListComponent } from './features/addons/addon-list.component';
 
 export const routes: Routes = [
   {
@@ -107,6 +114,50 @@ export const routes: Routes = [
       {
         path: 'categories/:id',
         loadComponent: () => Promise.resolve(CategoryDetailComponent)
+      },
+      {
+        path: 'tags',
+        component: TagListComponent
+      },
+      
+      // Product routes
+      {
+        path: 'products',
+        component: ProductListComponent
+      },
+      {
+        path: 'products/create',
+        component: ProductFormComponent,
+        canActivate: [() => roleGuard(['manager'])]
+      },
+      {
+        path: 'products/edit/:id',
+        component: ProductFormComponent,
+        canActivate: [() => roleGuard(['manager'])]
+      },
+      {
+        path: 'products/:id',
+        component: ProductDetailComponent
+      },
+      {
+        path: 'addons',
+        component: AddonListComponent,
+        canActivate: [() => roleGuard(['manager'])]
+      },
+      {
+        path: 'addons/create',
+        component: AddonFormComponent,
+        canActivate: [() => roleGuard(['manager'])]
+      },
+      {
+        path: 'addons/edit/:id',
+        component: AddonFormComponent,
+        canActivate: [() => roleGuard(['manager'])]
+      },
+      {
+        path: 'addons/:id',
+        component: AddonDetailComponent,
+        canActivate: [() => roleGuard(['manager'])]
       }
     ]
   },
