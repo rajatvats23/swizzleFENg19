@@ -18,50 +18,50 @@ export const navigationConfig = {
     { 
       label: 'Users', 
       icon: 'people', 
-      route: '/dashboard/users',
+      route: '/users',
       roles: ['superadmin', 'admin', 'manager'] // Not visible to staff
     },
     { 
       label: 'Restaurants', 
       icon: 'restaurant', 
-      route: '/dashboard/restaurants',
+      route: '/restaurants',
       roles: ['admin', 'superadmin'] // Only superadmin and admin
     },
     { 
       label: 'My Restaurant', 
       icon: 'store', 
-      route: '/dashboard/my-restaurant',
+      route: '/my-restaurant',
       roles: ['manager', 'staff'] // Only restaurant managers and staff
     },
     // Add this new menu item
     { 
       label: 'Menus', 
       icon: 'menu_book', 
-      route: '/dashboard/menus',
+      route: '/menus',
       roles: ['superadmin', 'admin', 'manager'] // All except staff
     },
     { 
       label: 'Categories', 
       icon: 'category', 
-      route: '/dashboard/categories',
+      route: '/categories',
       roles: ['superadmin', 'admin', 'manager', 'staff'] // All roles can view categories
     },
     { 
       label: 'Tags', 
       icon: 'local_offer', 
-      route: '/dashboard/tags',
+      route: '/tags',
       roles: ['superadmin', 'admin', 'manager', 'staff'] // All roles can view tags
     },
     { 
       label: 'Products', 
       icon: 'fastfood', 
-      route: '/dashboard/products',
+      route: '/products',
       roles: ['superadmin', 'admin', 'manager', 'staff'] // All roles can view products
     },
     { 
       label: 'Addons', 
       icon: 'add_circle', 
-      route: '/dashboard/addons',
+      route: '/addons',
       roles: ['manager'] // Only visible to restaurant managers
     }
   ]

@@ -3,7 +3,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal, ViewChild, OnInit } from '@angular/core';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Subject } from 'rxjs';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -25,6 +25,7 @@ import { navigationConfig, NavItem } from '../config/navigation.config';
     RouterOutlet,
     MatSidenavModule,
     MatToolbarModule,
+    RouterModule,
     MatIconModule,
     MatButtonModule,
     MatListModule,
