@@ -22,7 +22,6 @@ import { Restaurant } from './models/restaurant.model';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,

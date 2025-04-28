@@ -21,7 +21,6 @@ import { Tag } from '../products/product.model';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     ReactiveFormsModule,
     MatTableModule,
     MatButtonModule,
