@@ -63,6 +63,12 @@ export const navigationConfig = {
       icon: 'add_circle', 
       route: '/addons',
       roles: ['manager'] // Only visible to restaurant managers
+    },
+    {
+      label: 'Tables',
+      icon: 'table_restaurant',
+      route: '/tables',
+      roles: ['manager', 'staff']
     }
   ]
 };

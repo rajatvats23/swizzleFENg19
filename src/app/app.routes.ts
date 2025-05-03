@@ -80,6 +80,33 @@ export const routes: Routes = [
         canActivate: [() => roleGuard(['manager'])]
       },
       
+      // Table routes
+      {
+        path: 'tables',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/tables/table-list.component').then(m => m.TableListComponent),
+            canActivate: [() => roleGuard(['manager', 'staff'])]
+          },
+          {
+            path: 'create',
+            loadComponent: () => import('./features/tables/table-form.component').then(m => m.TableFormComponent),
+            canActivate: [() => roleGuard(['manager'])]
+          },
+          {
+            path: 'edit/:id',
+            loadComponent: () => import('./features/tables/table-form.component').then(m => m.TableFormComponent),
+            canActivate: [() => roleGuard(['manager'])]
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/tables/table-detail.component').then(m => m.TableDetailComponent),
+            canActivate: [() => roleGuard(['manager', 'staff'])]
+          }
+        ]
+      },
+      
       // Menu routes
       {
         path: 'menus',
@@ -195,6 +222,12 @@ export const routes: Routes = [
         pathMatch: 'full'
       }
     ]
+  },
+  
+  // Public route for table QR code access
+  {
+    path: 'table/:qrCodeId',
+    loadComponent: () => import('./features/tables/customer-table-view.component').then(m => m.CustomerTableViewComponent)
   },
   
   // Fallback route
