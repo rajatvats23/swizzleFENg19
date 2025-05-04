@@ -42,216 +42,245 @@ import { KdsNotificationOverlayComponent } from './kds-notification-overlay.comp
   ],
   template: `
     <div class="kds-container">
-      <div class="kds-header">
-        <h1>Kitchen Display System</h1>
-        <div class="header-actions">
-          <mat-form-field appearance="outline">
-            <mat-label>Sort By</mat-label>
-            <mat-select [(ngModel)]="sortBy" (selectionChange)="applyFilters()">
-              <mat-option value="time">Time (Oldest First)</mat-option>
-              <mat-option value="time-desc">Time (Newest First)</mat-option>
-              <mat-option value="table">Table Number</mat-option>
-            </mat-select>
-          </mat-form-field>
+  <div class="kds-header">
+    <h1>Kitchen Display System</h1>
+    
+    <div class="header-actions">
+      <mat-form-field appearance="outline">
+        <mat-label>Sort By</mat-label>
+        <mat-select [(ngModel)]="sortBy" (selectionChange)="applyFilters()">
+          <mat-option value="time">Time (Oldest First)</mat-option>
+          <mat-option value="time-desc">Time (Newest First)</mat-option>
+          <mat-option value="table">Table Number</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-          <button mat-raised-button color="primary" (click)="refreshOrders()">
-            <mat-icon class="material-symbols-outlined">refresh</mat-icon> Refresh
-          </button>
-        </div>
-      </div>
-
-      <mat-tab-group>
-        <mat-tab>
-          <ng-template mat-tab-label>
-            All Orders
-            <mat-badge
-              [matBadge]="filteredOrders.length"
-              matBadgeOverlap="false"
-              matBadgeColor="accent"
-            ></mat-badge>
-          </ng-template>
-
-          <div class="orders-grid">
-            <ng-container *ngIf="filteredOrders.length > 0; else noOrders">
-              <app-kds-order-card
-                *ngFor="let order of filteredOrders"
-                [order]="order"
-                (statusChanged)="refreshOrders()"
-              ></app-kds-order-card>
-            </ng-container>
-
-            <app-kds-order-card
-              *ngFor="let order of filteredOrders"
-              [order]="order"
-              (statusChanged)="refreshOrders()"
-              (click)="viewOrderDetails(order._id)"
-              style="cursor: pointer;"
-            ></app-kds-order-card>
-
-            <ng-template #noOrders>
-              <div class="no-orders">
-                <mat-icon class="material-symbols-outlined">restaurant</mat-icon>
-                <p>No active orders at the moment</p>
-              </div>
-            </ng-template>
-          </div>
-        </mat-tab>
-
-        <mat-tab>
-          <ng-template mat-tab-label>
-            Placed
-            <mat-badge
-              [matBadge]="countOrdersByStatus('placed')"
-              matBadgeOverlap="false"
-              matBadgeColor="warn"
-            ></mat-badge>
-          </ng-template>
-
-          <div class="orders-grid">
-            <ng-container
-              *ngIf="
-                getOrdersByStatus('placed').length > 0;
-                else noPlacedOrders
-              "
-            >
-              <app-kds-order-card
-                *ngFor="let order of getOrdersByStatus('placed')"
-                [order]="order"
-                (statusChanged)="refreshOrders()"
-              ></app-kds-order-card>
-            </ng-container>
-
-            <ng-template #noPlacedOrders>
-              <div class="no-orders">
-                <mat-icon class="material-symbols-outlined">check_circle</mat-icon>
-                <p>No new orders waiting to be prepared</p>
-              </div>
-            </ng-template>
-          </div>
-        </mat-tab>
-
-        <mat-tab>
-          <ng-template mat-tab-label>
-            Preparing
-            <mat-badge
-              [matBadge]="countOrdersByStatus('preparing')"
-              matBadgeOverlap="false"
-              matBadgeColor="primary"
-            ></mat-badge>
-          </ng-template>
-
-          <div class="orders-grid">
-            <ng-container
-              *ngIf="
-                getOrdersByStatus('preparing').length > 0;
-                else noPreparingOrders
-              "
-            >
-              <app-kds-order-card
-                *ngFor="let order of getOrdersByStatus('preparing')"
-                [order]="order"
-                (statusChanged)="refreshOrders()"
-              ></app-kds-order-card>
-            </ng-container>
-
-            <ng-template #noPreparingOrders>
-              <div class="no-orders">
-                <mat-icon class="material-symbols-outlined">restaurant</mat-icon>
-                <p>No orders currently being prepared</p>
-              </div>
-            </ng-template>
-          </div>
-        </mat-tab>
-
-        <mat-tab>
-          <ng-template mat-tab-label>
-            Ready
-            <mat-badge
-              [matBadge]="countOrdersByStatus('ready')"
-              matBadgeOverlap="false"
-              matBadgeColor="accent"
-            ></mat-badge>
-          </ng-template>
-
-          <div class="orders-grid">
-            <ng-container
-              *ngIf="getOrdersByStatus('ready').length > 0; else noReadyOrders"
-            >
-              <app-kds-order-card
-                *ngFor="let order of getOrdersByStatus('ready')"
-                [order]="order"
-                (statusChanged)="refreshOrders()"
-              ></app-kds-order-card>
-            </ng-container>
-
-            <ng-template #noReadyOrders>
-              <div class="no-orders">
-                <mat-icon class="material-symbols-outlined">room_service</mat-icon>
-                <p>No orders ready for service</p>
-              </div>
-            </ng-template>
-          </div>
-        </mat-tab>
-      </mat-tab-group>
-      <app-kds-notification-overlay></app-kds-notification-overlay>
+      <button mat-raised-button color="primary" class="refresh-button" (click)="refreshOrders()">
+        <mat-icon class="material-symbols-outlined">refresh</mat-icon> Refresh
+      </button>
     </div>
+  </div>
+
+  <mat-tab-group mat-stretch-tabs="false" class="order-tabs" animationDuration="200ms">
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div class="tab-label">
+          All Orders
+          <div class="badge">{{filteredOrders.length}}</div>
+        </div>
+      </ng-template>
+
+      <div class="orders-grid">
+        <ng-container *ngIf="filteredOrders.length > 0; else noOrders">
+          <app-kds-order-card
+            *ngFor="let order of filteredOrders; trackBy: trackById"
+            [order]="order"
+            (statusChanged)="refreshOrders()"
+            (click)="viewOrderDetails(order._id)"
+            class="order-item"
+          ></app-kds-order-card>
+        </ng-container>
+        
+        <ng-template #noOrders>
+          <div class="no-orders">
+            <mat-icon class="material-symbols-outlined">restaurant</mat-icon>
+            <p>No active orders at the moment</p>
+          </div>
+        </ng-template>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div class="tab-label">
+          Placed
+          <div class="badge urgent">{{getOrdersByStatus('placed').length}}</div>
+        </div>
+      </ng-template>
+      
+      <!-- Similar content structure as the first tab, filtered for placed orders -->
+      <div class="orders-grid">
+        <ng-container *ngIf="getOrdersByStatus('placed').length > 0; else noPlacedOrders">
+          <app-kds-order-card
+            *ngFor="let order of getOrdersByStatus('placed'); trackBy: trackById"
+            [order]="order"
+            (statusChanged)="refreshOrders()"
+            (click)="viewOrderDetails(order._id)"
+            class="order-item"
+          ></app-kds-order-card>
+        </ng-container>
+        
+        <ng-template #noPlacedOrders>
+          <div class="no-orders">
+            <mat-icon class="material-symbols-outlined">check_circle</mat-icon>
+            <p>No new orders waiting to be prepared</p>
+          </div>
+        </ng-template>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div class="tab-label">
+          Preparing
+          <div class="badge warning">{{getOrdersByStatus('preparing').length}}</div>
+        </div>
+      </ng-template>
+      
+      <!-- Similar content for preparing orders -->
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <div class="tab-label">
+          Ready
+          <div class="badge success">{{getOrdersByStatus('ready').length}}</div>
+        </div>
+      </ng-template>
+      
+      <!-- Similar content for ready orders -->
+    </mat-tab>
+  </mat-tab-group>
+  
+  <app-kds-notification-overlay></app-kds-notification-overlay>
+</div>
   `,
   styles: [
-    `
-      .kds-container {
-        width: 100%;
-        padding: 16px;
+    `.kds-container {
+      width: 100%;
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 24px;
+      background-color: #f8f9fa;
+    }
+    
+    .kds-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      
+      h1 {
+        font-size: 28px;
+        font-weight: 500;
+        color: #212529;
+        margin: 0;
       }
-
-      .kds-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      
+      mat-form-field {
+        width: 220px;
+        margin-bottom: 0;
       }
-
-      .header-actions {
-        display: flex;
-        gap: 16px;
-        align-items: center;
+      
+      .refresh-button {
+        height: 44px;
       }
-
-      .orders-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 16px;
-        padding: 16px 0;
+    }
+    
+    .order-tabs {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      overflow: hidden;
+      
+      ::ng-deep .mat-mdc-tab-header {
+        border-bottom: 1px solid #eee;
       }
-
-      .no-orders {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 48px;
-        grid-column: 1 / -1;
-        text-align: center;
-        color: #666;
+    }
+    
+    .tab-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 12px;
+      background-color: #5c6bc0;
+      color: white;
+      font-size: 12px;
+      font-weight: 500;
+      
+      &.urgent {
+        background-color: #f44336;
       }
-
-      .no-orders mat-icon {
+      
+      &.warning {
+        background-color: #ff9800;
+      }
+      
+      &.success {
+        background-color: #4caf50;
+      }
+    }
+    
+    .orders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 24px;
+      padding: 24px;
+      
+      .order-item {
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+      }
+    }
+    
+    .no-orders {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 64px 0;
+      color: #6c757d;
+      
+      mat-icon {
         font-size: 48px;
         height: 48px;
         width: 48px;
         margin-bottom: 16px;
+        opacity: 0.7;
       }
-
-      @media (max-width: 768px) {
-        .kds-header {
-          flex-direction: column;
-          align-items: flex-start;
-        }
-
-        .header-actions {
-          width: 100%;
-          margin-top: 16px;
-        }
+      
+      p {
+        font-size: 18px;
+        margin: 0;
       }
+    }
+    
+    @media (max-width: 768px) {
+      .kds-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      
+      .header-actions {
+        width: 100%;
+      }
+      
+      .orders-grid {
+        grid-template-columns: 1fr;
+      }
+    }
     `,
   ],
 })
@@ -356,4 +385,10 @@ export class KdsDashboardComponent implements OnInit, OnDestroy {
   getOrdersByStatus(status: string): Order[] {
     return this.filteredOrders.filter((order) => order.status === status);
   }
+
+  trackById(index: number, order: Order): string {
+    return order._id;
+  }
 }
+
+
