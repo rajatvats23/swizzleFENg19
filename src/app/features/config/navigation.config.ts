@@ -66,7 +66,7 @@ export const navigationConfig = {
     },
     {
       label: 'Tables',
-      icon: 'table_restaurant',
+      icon: 'table_bar',
       route: '/tables',
       roles: ['manager', 'staff']
     }

@@ -1,4 +1,3 @@
-// src/app/features/tables/qr-code-dialog.component.ts
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -29,6 +28,7 @@ interface DialogData {
         [errorCorrectionLevel]="'M'"
       ></qrcode>
       <p class="qr-info">Scan to access table menu</p>
+      <p class="qr-url">{{qrCodeData}}</p>
     </div>
     <div mat-dialog-actions align="end">
       <button mat-button (click)="printQRCode()">Print</button>
@@ -46,6 +46,12 @@ interface DialogData {
       margin-top: 16px;
       color: #666;
     }
+    .qr-url {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #999;
+      word-break: break-all;
+    }
   `]
 })
 export class QrCodeDialogComponent implements OnInit {
@@ -57,9 +63,10 @@ export class QrCodeDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Create the URL for the QR code using window.location.origin as fallback
-    const baseUrl = window.location.origin;
-    this.qrCodeData = `${baseUrl}/table/${this.data.table.qrCodeIdentifier}`;
+    const apiBaseUrl =  'http://localhost:3000';
+    
+    // Create the URL for the QR code
+    this.qrCodeData = `${apiBaseUrl}/table/${this.data.table.qrCodeIdentifier}`;
   }
 
   printQRCode(): void {
