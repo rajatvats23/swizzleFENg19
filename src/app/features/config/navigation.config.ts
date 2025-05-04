@@ -33,7 +33,18 @@ export const navigationConfig = {
       route: '/my-restaurant',
       roles: ['manager', 'staff'] // Only restaurant managers and staff
     },
-    // Add this new menu item
+    { 
+      label: 'Kitchen Display', 
+      icon: 'restaurant_menu', 
+      route: '/kitchen',
+      roles: ['manager', 'staff'] // Only visible to restaurant managers and staff
+    },
+    { 
+      label: 'Tables', 
+      icon: 'table_bar', 
+      route: '/tables',
+      roles: ['manager', 'staff'] // Only visible to restaurant managers and staff
+    },
     { 
       label: 'Menus', 
       icon: 'menu_book', 
@@ -63,12 +74,6 @@ export const navigationConfig = {
       icon: 'add_circle', 
       route: '/addons',
       roles: ['manager'] // Only visible to restaurant managers
-    },
-    {
-      label: 'Tables',
-      icon: 'table_bar',
-      route: '/tables',
-      roles: ['manager', 'staff']
     }
   ]
 };
