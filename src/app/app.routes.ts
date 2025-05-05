@@ -80,6 +80,33 @@ export const routes: Routes = [
         loadComponent: () => import('./features/restaurants/manager-restaurant.component').then(m => m.ManagerRestaurantComponent),
         canActivate: [() => roleGuard(['manager'])]
       },
+
+      // Reservation routes
+      {
+        path: 'reservations',
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('./features/reservations/reservation-list.component').then(m => m.ReservationListComponent),
+            canActivate: [() => roleGuard(['manager', 'staff'])]
+          },
+          {
+            path: 'create',
+            loadComponent: () => import('./features/reservations/reservation-form.component').then(m => m.ReservationFormComponent),
+            canActivate: [() => roleGuard(['manager', 'staff'])]
+          },
+          {
+            path: 'edit/:id',
+            loadComponent: () => import('./features/reservations/reservation-form.component').then(m => m.ReservationFormComponent),
+            canActivate: [() => roleGuard(['manager', 'staff'])]
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('./features/reservations/reservation-detail.component').then(m => m.ReservationDetailComponent),
+            canActivate: [() => roleGuard(['manager', 'staff'])]
+          }
+        ]
+      },
       
       // Table routes
       {

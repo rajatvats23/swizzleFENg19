@@ -74,6 +74,12 @@ export const navigationConfig = {
       icon: 'add_circle', 
       route: '/addons',
       roles: ['manager'] // Only visible to restaurant managers
-    }
+    },
+    { 
+      label: 'Reservations', 
+      icon: 'event_available', 
+      route: '/reservations',
+      roles: ['manager', 'staff'] // Only visible to restaurant managers and staff
+    },
   ]
 };
