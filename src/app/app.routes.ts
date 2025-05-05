@@ -40,7 +40,7 @@ export const routes: Routes = [
       }
     ]
   },
-  
+
   // Main layout - all authenticated routes will use this layout
   {
     path: '',
@@ -52,13 +52,13 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
-      
+
       // Users route
       {
         path: 'users',
         loadComponent: () => import('./features/users/users.component').then(m => m.UsersComponent)
       },
-      
+
       // Restaurant routes
       {
         path: 'restaurants',
@@ -79,6 +79,24 @@ export const routes: Routes = [
         path: 'my-restaurant',
         loadComponent: () => import('./features/restaurants/manager-restaurant.component').then(m => m.ManagerRestaurantComponent),
         canActivate: [() => roleGuard(['manager'])]
+      },
+
+
+      // Payment routes
+      {
+        path: 'payments',
+        children: [
+          {
+            path: 'reports',
+            loadComponent: () => import('./features/payments/payment-reports.component').then(m => m.PaymentReportsComponent),
+            canActivate: [() => roleGuard(['manager'])]
+          },
+          {
+            path: 'order/:orderId',
+            loadComponent: () => import('./features/payments/payment-list.component').then(m => m.PaymentListComponent),
+            canActivate: [() => roleGuard(['manager', 'staff'])]
+          }
+        ]
       },
 
       // Reservation routes
@@ -107,7 +125,7 @@ export const routes: Routes = [
           }
         ]
       },
-      
+
       // Table routes
       {
         path: 'tables',
@@ -134,14 +152,14 @@ export const routes: Routes = [
           }
         ]
       },
-      
+
       // Kitchen Display System routes
       {
         path: 'kitchen',
         loadComponent: () => import('./features/kds/kds-dashboard.component').then(m => m.KdsDashboardComponent),
         canActivate: [() => roleGuard(['manager', 'staff'])]
       },
-      
+
       // Menu routes
       {
         path: 'menus',
@@ -166,7 +184,7 @@ export const routes: Routes = [
           }
         ]
       },
-      
+
       // Category routes
       {
         path: 'categories',
@@ -191,13 +209,13 @@ export const routes: Routes = [
           }
         ]
       },
-      
+
       // Tag routes
       {
         path: 'tags',
         loadComponent: () => import('./features/tag/tag.component').then(m => m.TagListComponent)
       },
-      
+
       // Product routes
       {
         path: 'products',
@@ -222,7 +240,7 @@ export const routes: Routes = [
           }
         ]
       },
-      
+
       // Addon routes
       {
         path: 'addons',
@@ -249,7 +267,7 @@ export const routes: Routes = [
           }
         ]
       },
-      
+
       // Default route redirects
       {
         path: '',
@@ -258,13 +276,13 @@ export const routes: Routes = [
       }
     ]
   },
-  
+
   // Public route for table QR code access
   {
     path: 'table/:qrCodeId',
     loadComponent: () => import('./features/tables/customer-table-view.component').then(m => m.CustomerTableViewComponent)
   },
-  
+
   // Fallback route
   {
     path: '**',

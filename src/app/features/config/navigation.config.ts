@@ -81,5 +81,11 @@ export const navigationConfig = {
       route: '/reservations',
       roles: ['manager', 'staff'] // Only visible to restaurant managers and staff
     },
+    { 
+      label: 'Payment Reports', 
+      icon: 'payments', 
+      route: '/payments/reports',
+      roles: ['manager'] // Only visible to restaurant managers
+    }
   ]
 };

@@ -5,6 +5,7 @@ import {
   MatDialogModule,
   MAT_DIALOG_DATA,
   MatDialogRef,
+  MatDialog,
 } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,9 +13,11 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { KitchenDisplayService } from './kds.service';
 import { Order, OrderItem } from './models/kds.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { PaymentService } from '../payments/payment.service';
 
 interface OrderDetailData {
   orderId: string;
@@ -32,6 +35,7 @@ interface OrderDetailData {
     MatChipsModule,
     MatSelectModule,
     FormsModule,
+    RouterLink,
   ],
   template: `
     <h2 mat-dialog-title>Order Details</h2>
@@ -144,6 +148,21 @@ interface OrderDetailData {
         <div class="total-amount">
           <span class="label">Total Amount:</span>
           <span class="value">{{ order.totalAmount | currency }}</span>
+        </div>
+      </div>
+      
+      <mat-divider class="section-divider"></mat-divider>
+
+      <div class="payment-actions">
+        <h3>Payment Options</h3>
+        <div class="action-buttons">
+          <button mat-raised-button color="primary" (click)="recordCashPayment()" [disabled]="isProcessing">
+            <mat-icon>payments</mat-icon> Record Cash Payment
+          </button>
+          <a mat-button [routerLink]="['/payments/order', order._id]" 
+             color="accent" (click)="dialogRef.close()">
+            <mat-icon>receipt_long</mat-icon> View Payments
+          </a>
         </div>
       </div>
     </div>
@@ -306,16 +325,34 @@ interface OrderDetailData {
         padding: 24px;
         text-align: center;
       }
+      
+      .payment-actions {
+        margin-top: 16px;
+      }
+      
+      .action-buttons {
+        display: flex;
+        gap: 12px;
+      }
+      
+      @media (max-width: 600px) {
+        .action-buttons {
+          flex-direction: column;
+        }
+      }
     `,
   ],
 })
 export class KdsOrderDetailDialogComponent implements OnInit {
   private kdsService = inject(KitchenDisplayService);
+  private paymentService = inject(PaymentService);
   private snackBar = inject(MatSnackBar);
+  private dialog = inject(MatDialog);
 
   order: Order | null = null;
   isLoading = true;
   isUpdating = false;
+  isProcessing = false;
 
   constructor(
     public dialogRef: MatDialogRef<KdsOrderDetailDialogComponent>,
@@ -476,5 +513,21 @@ export class KdsOrderDetailDialogComponent implements OnInit {
           this.isUpdating = false;
         },
       });
+  }
+  
+  recordCashPayment(): void {
+    if (!this.order) return;
+    
+    this.isProcessing = true;
+    this.paymentService.recordCashPayment(this.order._id).subscribe({
+      next: (response) => {
+        this.snackBar.open('Cash payment recorded successfully', 'Close', { duration: 3000 });
+        this.isProcessing = false;
+      },
+      error: (error) => {
+        this.snackBar.open(error.error?.message || 'Failed to record payment', 'Close', { duration: 5000 });
+        this.isProcessing = false;
+      }
+    });
   }
 }
