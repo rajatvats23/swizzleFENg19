@@ -72,13 +72,16 @@ import { KdsNotificationOverlayComponent } from './kds-notification-overlay.comp
 
       <div class="orders-grid">
         <ng-container *ngIf="filteredOrders.length > 0; else noOrders">
+          <ng-container
+          *ngFor="let order of filteredOrders; trackBy: trackById"
+          (click)="viewOrderDetails(order._id)"
+          >
           <app-kds-order-card
-            *ngFor="let order of filteredOrders; trackBy: trackById"
             [order]="order"
             (statusChanged)="refreshOrders()"
-            (click)="viewOrderDetails(order._id)"
             class="order-item"
           ></app-kds-order-card>
+          </ng-container>
         </ng-container>
         
         <ng-template #noOrders>
