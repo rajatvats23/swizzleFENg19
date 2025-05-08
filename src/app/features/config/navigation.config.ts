@@ -8,12 +8,18 @@ export interface NavItem {
 }
 
 export const navigationConfig = {
-  appTitle: 'Admin Dashboard',
+  appTitle: 'Restaurant Dashboard',
   items: [
     { 
       label: 'Dashboard', 
       icon: 'dashboard', 
       route: '/dashboard'
+    },
+    { 
+      label: 'Analytics', 
+      icon: 'insights', 
+      route: '/analytics',
+      roles: ['manager', 'admin', 'superadmin'] // Only for managers and admins
     },
     { 
       label: 'Users', 

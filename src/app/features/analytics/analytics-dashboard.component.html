@@ -1,0 +1,321 @@
+<!-- src/app/features/analytics/analytics-dashboard.component.html -->
+<div class="analytics-container">
+  <div class="header-actions">
+    <div class="page-title">
+      <h1 class="mat-headline-5">Restaurant Analytics</h1>
+      <span class="subtitle">Insights and performance metrics</span>
+    </div>
+    <div class="filter-form">
+      <form [formGroup]="filterForm" class="filter-controls">
+        <mat-form-field appearance="outline">
+          <mat-label>Date Range</mat-label>
+          <mat-select formControlName="dateRange" (selectionChange)="onDateRangeChange()">
+            <mat-option value="today">Today</mat-option>
+            <mat-option value="yesterday">Yesterday</mat-option>
+            <mat-option value="last7days">Last 7 Days</mat-option>
+            <mat-option value="last30days">Last 30 Days</mat-option>
+            <mat-option value="thisMonth">This Month</mat-option>
+            <mat-option value="lastMonth">Last Month</mat-option>
+            <mat-option value="custom">Custom Range</mat-option>
+          </mat-select>
+        </mat-form-field>
+  
+        <ng-container *ngIf="filterForm.get('dateRange')?.value === 'custom'">
+          <mat-form-field appearance="outline">
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+            <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+    
+          <mat-form-field appearance="outline">
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+            <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+          </mat-form-field>
+        </ng-container>
+  
+        <button mat-raised-button color="primary" (click)="applyFilters()" [disabled]="isLoading || !filterForm.valid">
+          <mat-icon class="material-symbols-outlined">filter_list</mat-icon> 
+          Apply Filters
+        </button>
+  
+        <button mat-button color="accent" (click)="resetFilters()" [disabled]="isLoading">
+          <mat-icon class="material-symbols-outlined">refresh</mat-icon>
+          Reset
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    <p>Loading analytics data...</p>
+  </div>
+
+  <!-- Dashboard Summary Cards -->
+  <div class="summary-cards" *ngIf="!isLoading && dashboardSummary">
+    <mat-card class="summary-card">
+      <mat-card-content>
+        <div class="card-icon revenue-icon">
+          <mat-icon class="material-symbols-outlined">payments</mat-icon>
+        </div>
+        <div class="card-details">
+          <h3 class="card-title">Today's Revenue</h3>
+          <p class="card-value">₹{{dashboardSummary.todayRevenue | number:'1.2-2'}}</p>
+          <p class="card-trend" [ngClass]="dashboardSummary.todayRevenue > dashboardSummary.yesterdayRevenue ? 'trend-up' : 'trend-down'">
+            <mat-icon class="material-symbols-outlined">{{dashboardSummary.todayRevenue > dashboardSummary.yesterdayRevenue ? 'trending_up' : 'trending_down'}}</mat-icon>
+            {{calculatePercentage(dashboardSummary.todayRevenue, dashboardSummary.yesterdayRevenue)}}% from yesterday
+          </p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="summary-card">
+      <mat-card-content>
+        <div class="card-icon orders-icon">
+          <mat-icon class="material-symbols-outlined">receipt_long</mat-icon>
+        </div>
+        <div class="card-details">
+          <h3 class="card-title">Today's Orders</h3>
+          <p class="card-value">{{dashboardSummary.todayOrders}}</p>
+          <p class="card-trend" [ngClass]="dashboardSummary.todayOrders > dashboardSummary.yesterdayOrders ? 'trend-up' : 'trend-down'">
+            <mat-icon class="material-symbols-outlined">{{dashboardSummary.todayOrders > dashboardSummary.yesterdayOrders ? 'trending_up' : 'trending_down'}}</mat-icon>
+            {{calculatePercentage(dashboardSummary.todayOrders, dashboardSummary.yesterdayOrders)}}% from yesterday
+          </p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="summary-card">
+      <mat-card-content>
+        <div class="card-icon tables-icon">
+          <mat-icon class="material-symbols-outlined">table_bar</mat-icon>
+        </div>
+        <div class="card-details">
+          <h3 class="card-title">Table Occupancy</h3>
+          <p class="card-value">{{dashboardSummary.tableOccupancyRate | number:'1.0-1'}}%</p>
+          <p class="card-subtext">{{dashboardSummary.activeTables}} of {{dashboardSummary.totalTables}} tables</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="summary-card">
+      <mat-card-content>
+        <div class="card-icon pending-icon">
+          <mat-icon class="material-symbols-outlined">schedule</mat-icon>
+        </div>
+        <div class="card-details">
+          <h3 class="card-title">Pending Orders</h3>
+          <p class="card-value">{{dashboardSummary.pendingOrders}}</p>
+          <p class="card-subtext">Awaiting preparation or delivery</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Main Analytics Content -->
+  <div class="analytics-content" *ngIf="!isLoading">
+    <!-- Custom tab navigation -->
+    <div class="custom-tabs">
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'revenue'"
+        (click)="setActiveTab('revenue')">
+        Revenue
+      </button>
+      <button 
+        class="tab-button" 
+        [class.active]="activeTab === 'operations'"
+        (click)="setActiveTab('operations')">
+        Operations
+      </button>
+    </div>
+
+    <!-- Tab content containers -->
+    <div class="tab-content-container">
+      <!-- Revenue Tab Content -->
+      <div class="tab-content" *ngIf="activeTab === 'revenue'">
+        <div class="chart-row">
+          <mat-card class="chart-card wide-card">
+            <mat-card-header>
+              <mat-card-title>Revenue Trends</mat-card-title>
+              <mat-card-subtitle>Daily revenue for the selected period</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <app-revenue-chart [dailyRevenue]="dailyRevenue"></app-revenue-chart>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        
+        <div class="chart-row">
+          <mat-card class="chart-card">
+            <mat-card-header>
+              <mat-card-title>Top Selling Items</mat-card-title>
+              <mat-card-subtitle>Highest revenue generating items</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <app-top-items-chart [topItems]="topSellingItems"></app-top-items-chart>
+            </mat-card-content>
+          </mat-card>
+          
+          <mat-card class="chart-card">
+            <mat-card-header>
+              <mat-card-title>Category Performance</mat-card-title>
+              <mat-card-subtitle>Revenue by menu category</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <app-category-pie-chart [categoryData]="categoryPerformance"></app-category-pie-chart>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        
+        <div class="chart-row">
+          <mat-card class="chart-card">
+            <mat-card-header>
+              <mat-card-title>Average Order Value</mat-card-title>
+              <mat-card-subtitle>Average spend per order</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="metric-display">
+                <div class="metric-value">₹{{getAverageOrderValue() | number:'1.2-2'}}</div>
+                <div class="metric-trend" *ngIf="averageOrderValues.length > 1" 
+                     [ngClass]="getAverageOrderTrend() > 0 ? 'trend-up' : 'trend-down'">
+                  <mat-icon class="material-symbols-outlined">{{getAverageOrderTrend() > 0 ? 'trending_up' : 'trending_down'}}</mat-icon>
+                  {{getAverageOrderTrend()}}% from previous period
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+          
+          <mat-card class="chart-card">
+            <mat-card-header>
+              <mat-card-title>Payment Method Distribution</mat-card-title>
+              <mat-card-subtitle>Breakdown of payment methods</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <app-payment-method-chart [paymentData]="paymentMethodDistribution"></app-payment-method-chart>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+
+      <!-- Operations Tab Content -->
+      <div class="tab-content" *ngIf="activeTab === 'operations'">
+        <div class="chart-row">
+          <mat-card class="chart-card wide-card">
+            <mat-card-header>
+              <mat-card-title>Peak Hours</mat-card-title>
+              <mat-card-subtitle>
+                <div class="flex-header">
+                  <span>Order distribution by hour of day</span>
+                  <mat-form-field appearance="outline" class="day-selector">
+                    <mat-label>View by day</mat-label>
+                    <mat-select [(value)]="selectedDayOfWeek" (selectionChange)="onDayOfWeekChange($event.value)">
+                      <mat-option value="all">All Days</mat-option>
+                      <mat-option [value]="0">Sunday</mat-option>
+                      <mat-option [value]="1">Monday</mat-option>
+                      <mat-option [value]="2">Tuesday</mat-option>
+                      <mat-option [value]="3">Wednesday</mat-option>
+                      <mat-option [value]="4">Thursday</mat-option>
+                      <mat-option [value]="5">Friday</mat-option>
+                      <mat-option [value]="6">Saturday</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <ng-container *ngIf="!hasError('peakHours'); else peakHoursError">
+                <app-peak-hours-chart [peakHoursData]="getFilteredPeakHoursData()"></app-peak-hours-chart>
+                
+                <div class="insights-grid" *ngIf="getFilteredPeakHoursData().length > 0">
+                  <div class="insight-card">
+                    <div class="insight-label">Busiest Hour:</div>
+                    <div class="insight-value">{{ getBusiestHour() }}</div>
+                  </div>
+                  <div class="insight-card">
+                    <div class="insight-label">Highest Revenue Hour:</div>
+                    <div class="insight-value">{{ getHighestRevenueHour() }}</div>
+                  </div>
+                  <div class="insight-card" *ngIf="selectedDayOfWeek === 'all' && getBusiestDay()">
+                    <div class="insight-label">Busiest Day:</div>
+                    <div class="insight-value">{{ getBusiestDay()?.day }} ({{ getBusiestDay()?.count }} orders)</div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #peakHoursError>
+                <div class="error-display">
+                  <mat-icon color="warn">error_outline</mat-icon>
+                  <span>{{ getErrorMessage('peakHours') }}</span>
+                </div>
+              </ng-template>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        
+        <div class="chart-row">
+          <mat-card class="chart-card">
+            <mat-card-header>
+              <mat-card-title>Table Occupancy</mat-card-title>
+              <mat-card-subtitle>Table usage throughout the day</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <app-table-occupancy-chart [occupancyData]="tableOccupancy"></app-table-occupancy-chart>
+            </mat-card-content>
+          </mat-card>
+          
+          <mat-card class="chart-card">
+            <mat-card-header>
+              <mat-card-title>Order Fulfillment Time</mat-card-title>
+              <mat-card-subtitle>Average time to complete orders</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="metric-display" *ngIf="orderFulfillmentTime">
+                <div class="metric-value">{{formatFulfillmentTime(orderFulfillmentTime.averageFulfillmentTime / 60)}}</div>
+                <div class="metric-label">Average fulfillment time</div>
+                <div class="metric-details">
+                  <div class="detail-item">
+                    <span class="detail-label">Total Orders:</span>
+                    <span class="detail-value">{{orderFulfillmentTime.totalOrders}}</span>
+                  </div>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        
+        <div class="chart-row">
+          <mat-card class="chart-card wide-card">
+            <mat-card-header>
+              <mat-card-title>Customer Metrics</mat-card-title>
+              <mat-card-subtitle>Return rate and retention statistics</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content class="customer-metrics">
+              <div class="customer-metric" *ngIf="customerReturnRate">
+                <div class="metric-circle">
+                  <span class="metric-percentage">{{customerReturnRate.returnRate | number:'1.0-1'}}%</span>
+                </div>
+                <div class="metric-label">Customer Return Rate</div>
+              </div>
+              
+              <mat-divider [vertical]="true"></mat-divider>
+              
+              <div class="customer-stat" *ngIf="customerReturnRate">
+                <div class="stat-value">{{customerReturnRate.totalCustomers - customerReturnRate.returningCustomers || 0}}</div>
+                <div class="stat-label">New Customers</div>
+              </div>
+              
+              <div class="customer-stat" *ngIf="customerReturnRate">
+                <div class="stat-value">{{customerReturnRate.returningCustomers || 0}}</div>
+                <div class="stat-label">Returning Customers</div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

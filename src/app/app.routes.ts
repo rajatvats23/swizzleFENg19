@@ -53,6 +53,13 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
 
+      // Analytics route
+      {
+        path: 'analytics',
+        loadComponent: () => import('./features/analytics/analytics-dashboard.component').then(m => m.AnalyticsDashboardComponent),
+        canActivate: [() => roleGuard(['manager', 'admin', 'superadmin'])]
+      },
+
       // Users route
       {
         path: 'users',
@@ -80,7 +87,6 @@ export const routes: Routes = [
         loadComponent: () => import('./features/restaurants/manager-restaurant.component').then(m => m.ManagerRestaurantComponent),
         canActivate: [() => roleGuard(['manager'])]
       },
-
 
       // Payment routes
       {
