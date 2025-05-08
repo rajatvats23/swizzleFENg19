@@ -294,7 +294,6 @@ export class AnalyticsDashboardComponent implements OnInit, OnDestroy {
           paymentResponse
         ] = responses;
 
-        console.log(responses);
         
         // Process responses and update component properties
         if (summaryResponse) {

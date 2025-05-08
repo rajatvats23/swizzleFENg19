@@ -10,11 +10,11 @@ export interface NavItem {
 export const navigationConfig = {
   appTitle: 'Restaurant Dashboard',
   items: [
-    { 
-      label: 'Dashboard', 
-      icon: 'dashboard', 
-      route: '/dashboard'
-    },
+    // { 
+    //   label: 'Dashboard', 
+    //   icon: 'dashboard', 
+    //   route: '/dashboard'
+    // },
     { 
       label: 'Analytics', 
       icon: 'insights', 

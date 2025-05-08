@@ -40,6 +40,8 @@ export class MainLayoutComponent implements OnInit {
   
   private router = inject(Router);
   authService = inject(AuthService);
+
+  width = signal('170px');
   
   destroyed = new Subject<void>();
   showSidenavToggle = signal(true);
