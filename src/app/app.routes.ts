@@ -158,7 +158,12 @@ export const routes: Routes = [
           }
         ]
       },
-
+      // Host View Reservation System
+      {
+        path: 'host',
+        loadComponent: () => import('./features/host-view/host-view.component').then(m => m.HostViewComponent),
+        canActivate: [() => roleGuard(['manager', 'staff'])]
+      },
       // Kitchen Display System routes
       {
         path: 'kitchen',

@@ -1,0 +1,163 @@
+<div class="container">
+  <div class="host-header">
+    <h1>Host Dashboard</h1>
+    <p>Welcome guests, check table availability and create reservations</p>
+  </div>
+
+  <div class="main-content">
+    <!-- Guest Information Panel -->
+    <div class="guest-panel">
+      <div class="guest-form">
+        <h2>New Guest</h2>
+        <form [formGroup]="guestForm" (ngSubmit)="createReservation()">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Guest Name</mat-label>
+            <input matInput formControlName="customerName" placeholder="Enter guest name">
+            <mat-error *ngIf="guestForm.get('customerName')?.hasError('required')">
+              Guest name is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Phone Number</mat-label>
+            <input matInput formControlName="phoneNumber" placeholder="Enter phone number">
+            <mat-error *ngIf="guestForm.get('phoneNumber')?.hasError('required')">
+              Phone number is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email (Optional)</mat-label>
+            <input matInput formControlName="email" placeholder="Enter email address">
+            <mat-error *ngIf="guestForm.get('email')?.hasError('email')">
+              Please enter a valid email address
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Party Size</mat-label>
+            <input matInput type="number" min="1" formControlName="partySize">
+            <mat-error *ngIf="guestForm.get('partySize')?.hasError('required')">
+              Party size is required
+            </mat-error>
+            <mat-error *ngIf="guestForm.get('partySize')?.hasError('min')">
+              Party size must be at least 1
+            </mat-error>
+          </mat-form-field>
+
+          <div class="form-actions">
+            <button 
+              type="submit" 
+              class="seat-guest" 
+              [disabled]="guestForm.invalid || !selectedTable || isSubmitting">
+              {{ isSubmitting ? 'Seating...' : 'Seat Guest' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tables Display Panel -->
+    <div class="tables-panel">
+      <!-- Table Filtering Options -->
+      <div class="table-filters">
+        <div class="filter-group">
+          <label>Filter by capacity:</label>
+          <div class="capacity-buttons">
+            <button 
+              *ngFor="let capacity of availableCapacities" 
+              [class.active]="selectedCapacityFilter === capacity"
+              (click)="filterByCapacity(capacity)">
+              {{ capacity === 0 ? 'All' : capacity }}
+            </button>
+          </div>
+        </div>
+        <div class="view-toggle">
+          <button 
+          mat-icon-button
+            [class.active]="viewMode === 'grid'"
+            (click)="setViewMode('grid')">
+            <mat-icon class="material-symbols-outlined">grid_view</mat-icon>
+          </button>
+          <button  mat-icon-button
+            [class.active]="viewMode === 'list'"
+            (click)="setViewMode('list')">
+            <mat-icon class="material-symbols-outlined">view_list</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="loading-container" *ngIf="isLoading">
+        <p>Loading tables...</p>
+      </div>
+
+      <div class="no-tables-message" *ngIf="!isLoading && filteredTables.length === 0">
+        <div class="icon">😕</div>
+        <p>No available tables for the selected party size.</p>
+      </div>
+      
+      <!-- Grid View Mode -->
+      <div class="tables-container" *ngIf="!isLoading && filteredTables.length > 0 && viewMode === 'grid'">
+        <div class="table-item" 
+             *ngFor="let table of filteredTables"
+             [class.selected]="selectedTable?._id === table._id"
+             [class.unavailable]="table.status !== 'Available'"
+             (click)="table.status === 'Available' && selectTable(table)">
+          
+          <div class="table-zone"></div>
+          
+          <div class="table">
+            <div class="table-number">{{table.tableNumber}}</div>
+            
+            <!-- Action Button -->
+            <div class="table-action-button"
+                 [class.reserved]="table.status !== 'Available'"
+                 [class.selected]="selectedTable?._id === table._id">
+              <span *ngIf="table.status !== 'Available'">RESERVED</span>
+              <span *ngIf="table.status === 'Available' && selectedTable?._id === table._id">SELECTED</span>
+              <span *ngIf="table.status === 'Available' && selectedTable?._id !== table._id">SELECT</span>
+            </div>
+          </div>
+          
+          <!-- Generate chairs based on capacity -->
+          <div class="chairs">
+            <ng-container *ngFor="let i of [].constructor(table.capacity); let index = index">
+              <div class="chair" 
+                   [style.left.%]="50 + 40 * Math.cos(2 * Math.PI * index / table.capacity) - 10"
+                   [style.top.%]="50 + 40 * Math.sin(2 * Math.PI * index / table.capacity) - 10">
+              </div>
+            </ng-container>
+          </div>
+          
+          <div class="table-info-tooltip">
+            Table #{{table.tableNumber}} - Capacity: {{table.capacity}}
+          </div>
+        </div>
+      </div>
+
+      <!-- List View Mode -->
+      <div class="tables-list" *ngIf="!isLoading && filteredTables.length > 0 && viewMode === 'list'">
+        <!-- Table Groups by Capacity -->
+        <ng-container *ngFor="let capacityGroup of tablesByCapacity | keyvalue">
+          <div class="capacity-group">
+            <h3>Tables for {{capacityGroup.key}} people ({{capacityGroup.value.length}})</h3>
+            <div class="tables-row">
+              <div class="table-list-item" 
+                   *ngFor="let table of capacityGroup.value"
+                   [class.selected]="selectedTable?._id === table._id"
+                   [class.unavailable]="table.status !== 'Available'"
+                   (click)="table.status === 'Available' && selectTable(table)">
+                <div class="table-list-number">T{{table.tableNumber}}</div>
+                <div class="table-list-action">
+                  <span *ngIf="table.status !== 'Available'">RESERVED</span>
+                  <span *ngIf="table.status === 'Available' && selectedTable?._id === table._id">SELECTED</span>
+                  <span *ngIf="table.status === 'Available' && selectedTable?._id !== table._id">SELECT</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

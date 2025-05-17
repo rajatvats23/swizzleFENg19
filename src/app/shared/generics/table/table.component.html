@@ -1,0 +1,100 @@
+<div class="generic-table-container">
+      <table class="generic-table">
+        <!-- Header Row -->
+        <thead>
+          <tr>
+            @for (column of columns(); track column.key) {
+              <th>
+                <div class="header-cell">
+                  <span class="header-text">{{ column.header }}</span>
+                  @if (column.sortable) {
+                    <button 
+                      class="sort-button"
+                      (click)="onSortClicked(column.key)">
+                      <mat-icon class="material-symbols-outlined" >{{ getSortIcon(column.key) }}</mat-icon>
+                    </button>
+                  }
+                  @if (column.filterable) {
+                    <button 
+                      class="filter-button"
+                      [matMenuTriggerFor]="filterMenu">
+                      <mat-icon class="material-symbols-outlined" >filter_list</mat-icon>
+                    </button>
+                    <mat-menu #filterMenu="matMenu" class="filter-menu">
+                      <div class="filter-container" (click)="$event.stopPropagation()">
+                        <mat-form-field appearance="outline" class="filter-input">
+                          <input matInput 
+                            placeholder="Filter value..." 
+                            [(ngModel)]="filterValues()[column.key]"
+                            (keyup.enter)="applyFilter(column.key)">
+                        </mat-form-field>
+                        <div class="filter-actions">
+                          <button mat-button (click)="clearFilter(column.key)">Clear</button>
+                          <button mat-raised-button 
+                            color="primary" 
+                            (click)="applyFilter(column.key)">Apply</button>
+                        </div>
+                      </div>
+                    </mat-menu>
+                  }
+                </div>
+              </th>
+            }
+            @if (showActions()) {
+              <th class="actions-column">Actions</th>
+            }
+          </tr>
+        </thead>
+
+        <!-- Table Body -->
+        <tbody>
+          @for (row of data(); track row[trackBy()]) {
+            <tr [class.alternate-row]="isAlternateRow($index)" (click)="onRowClick(row)">
+              @for (column of columns(); track column.key) {
+                <td>
+                  @if (column.render) {
+                    {{ column.render(row) }}
+                  } @else {
+                    {{ getPropertyValue(row, column.key) }}
+                  }
+                </td>
+              }
+              @if (showActions()) {
+                <td class="actions-column">
+                  <ng-container *ngTemplateOutlet="actionsTemplate(); context: { $implicit: row }"></ng-container>
+                </td>
+              }
+            </tr>
+          }
+          @if (data().length === 0) {
+            <tr class="empty-row">
+              <td [attr.colspan]="columns().length + (showActions() ? 1 : 0)">
+                {{ noDataMessage() }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      @if (showPagination()) {
+        <div class="pagination">
+          <div class="pagination-info">
+            Showing {{ getPaginationInfo() }}
+          </div>
+          <div class="pagination-controls">
+            <button mat-icon-button 
+              [disabled]="currentPage() === 0"
+              (click)="onPageChange(currentPage() - 1)">
+              <mat-icon class="material-symbols-outlined" >chevron_left</mat-icon>
+            </button>
+            <span class="pagination-page">{{ currentPage() + 1 }}</span>
+            <button mat-icon-button 
+              [disabled]="isLastPage()"
+              (click)="onPageChange(currentPage() + 1)">
+              <mat-icon class="material-symbols-outlined" >chevron_right</mat-icon>
+            </button>
+          </div>
+        </div>
+      }
+    </div>

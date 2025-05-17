@@ -1,5 +1,3 @@
-// src/app/features/config/navigation.config.ts
-
 export interface NavItem {
   label: string;
   icon: string;
@@ -49,6 +47,12 @@ export const navigationConfig = {
       label: 'Tables', 
       icon: 'table_bar', 
       route: '/tables',
+      roles: ['manager', 'staff'] // Only visible to restaurant managers and staff
+    },
+    { 
+      label: 'Host View', 
+      icon: 'meeting_room', 
+      route: '/host',
       roles: ['manager', 'staff'] // Only visible to restaurant managers and staff
     },
     { 
