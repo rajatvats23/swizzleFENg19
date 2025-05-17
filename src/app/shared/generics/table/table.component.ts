@@ -248,10 +248,6 @@ export interface FilterEvent {
       min-width: 250px;
     }
 
-    .filter-input {
-      // width: 100%;
-    }
-
     .filter-actions {
       display: flex;
       justify-content: flex-end;

@@ -88,7 +88,7 @@ import { QrCodeDialogComponent } from './qr-code-dialog.component';
 
         <mat-card>
           <mat-card-header>
-            <mat-card-title>Update Status</mat-card-title>
+            <mat-card-title class="mb-3">Update Status</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <form [formGroup]="statusForm" (ngSubmit)="updateStatus()">
