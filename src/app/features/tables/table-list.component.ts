@@ -95,7 +95,7 @@ interface FilterEvent {
         <!-- Advanced Filter Menu -->
         <mat-menu #filterMenu="matMenu">
           <div class="filter-container" (click)="$event.stopPropagation()">
-            <h3>Advanced Filters</h3>
+            <h3 class="mb-3">Advanced Filters</h3>
             
             <mat-form-field appearance="outline">
               <mat-label>Status</mat-label>
@@ -202,7 +202,6 @@ interface FilterEvent {
     
     .filter-container {
       padding: 16px;
-      width: 300px;
     }
     
     .filter-actions {

@@ -15,7 +15,6 @@ export interface TableColumn<T> {
   header: string;
   sortable?: boolean;
   filterable?: boolean;
-  customTemplate?: string;
   render?: (item: T) => string;
 }
 
@@ -245,11 +244,12 @@ export interface FilterEvent {
 
     .filter-container {
       padding: 16px;
+      width: auto;
       min-width: 250px;
     }
 
     .filter-input {
-      width: 100%;
+      // width: 100%;
     }
 
     .filter-actions {
